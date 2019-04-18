@@ -1,0 +1,21 @@
+{
+  "@context": {
+    "DFC-business": "https://frama.link/DFC-business-ontology",
+    "@base": "http://maPlateforme"
+  },
+  "DFC:Entreprise":{
+    "@id":"/entreprise/maPetiteEntreprise",
+    "DFC:manages":[
+      {
+        "DFC:references":{
+          "@id":"/defineProduct/item1"
+        }
+      },
+      {
+        "DFC:references":{
+          "@id":"/defineProduct/item1"
+        }
+      },
+    ]
+  },
+}
