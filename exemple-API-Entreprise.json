@@ -5,14 +5,14 @@
   },
   "DFC:Entreprise":{
     "@id":"/entreprise/maPetiteEntreprise",
-    "DFC:manages":[
+    "DFC-business:manages":[
       {
-        "DFC:references":{
+        "DFC-business:references":{
           "@id":"/defineProduct/item1"
         }
       },
       {
-        "DFC:references":{
+        "DFC-business:references":{
           "@id":"/defineProduct/item2"
         }
       }
