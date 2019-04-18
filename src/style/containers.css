@@ -1,0 +1,13 @@
+.container-content-centered {
+  justify-content: center;
+  align-items: center;
+}
+
+.containerH {
+  display: flex;
+}
+
+.containerV {
+  display: flex;
+  flex-direction: column;
+}

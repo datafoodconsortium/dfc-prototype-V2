@@ -1,0 +1,22 @@
+<div id="main" class="containerH">
+  <div class="containerV" style="flex:1">
+    <x-header></x-header>
+    <div class="containerH" style="flex:1">
+      <x-menu id="menu" style="flex-basis:200px"></x-menu>
+      <div class="box containerV" id="screen" style="flex:1"></div>
+    </div>
+  </div>
+</div>
+<style>
+  #main {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+  }
+
+  #screen{
+    margin:5px;
+  }
+</style>
