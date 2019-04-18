@@ -3,7 +3,7 @@
     "DFC-business": "https://frama.link/DFC-business-ontology",
     "@base": "http://maPlateforme"
   },
-  "DFC:Entreprise":{
+  "DFC-business:Entreprise":{
     "@id":"/entreprise/maPetiteEntreprise",
     "DFC-business:manages":[
       {
