@@ -1,11 +1,15 @@
 <div id="main" class="containerV">
   <h1>Catalog</h1>
-  <div id="catalogList" class="containerV">
+  <div id="catalogList">
   </div>
 </div>
 <style>
-  #catalogList > *{
+  #catalogList{
     padding: 20px;
     border-style:solid;
+    display: grid;
+    grid-gap: 10px 15px;
+    grid-template-columns: repeat(3, auto);
   }
+
 </style>

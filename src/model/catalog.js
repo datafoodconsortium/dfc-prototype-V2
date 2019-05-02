@@ -27,7 +27,7 @@ export default class Catalog extends GenericElement {
           }
         }).then(data => {
           console.log(data);
-          let out = data['DFC:Entreprise']['DFC:manages'].map(manage => manage['DFC:references']);
+          let out = data['DFC:Entreprise']['DFC:supplies'];
           console.log(out);
           this.publish({
             channel: 'catalog',

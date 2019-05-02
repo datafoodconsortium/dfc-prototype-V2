@@ -21,12 +21,24 @@ export default class Catalog extends GenericElement {
 
   setData(data) {
     let catalogList =this.shadowRoot.getElementById('catalogList');
-    console.log(catalogList);
+    console.log('data received',data);
     data.forEach(item=>{
-      let div = document.createElement('div');
-      let text = document.createTextNode(item.name);
-      div.appendChild(text);
-      catalogList.appendChild(div);
+      let divDesc = document.createElement('div');
+      catalogList.appendChild(divDesc);
+      let textDesc = document.createTextNode(item['DFC:description']);
+      divDesc.appendChild(textDesc);
+
+
+      let divQuantity = document.createElement('div');
+      catalogList.appendChild(divQuantity);
+      let textQuantity = document.createTextNode(item['DFC:quantity']);
+      divQuantity.appendChild(textQuantity);
+
+
+      let divUnit = document.createElement('div');
+      catalogList.appendChild(divUnit);
+      let textUnit = document.createTextNode(item['DFC:hasUnit']['@id']);
+      divUnit.appendChild(textDesc);
     })
   }
 }

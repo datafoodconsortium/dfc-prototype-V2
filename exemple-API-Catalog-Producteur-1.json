@@ -8,7 +8,7 @@
     "DFC:supplies":[
       {
         "@id":"/suppliedProduct/item1",
-        "DF:hasUnit":{
+        "DFC:hasUnit":{
           "@id":"/unit/kg"
         },
         "DFC:quantity":"5",
@@ -16,7 +16,7 @@
       },
       {
         "@id":"/suppliedProduct/item2",
-        "DF:hasUnit":{
+        "DFC:hasUnit":{
           "@id":"/unit/kg"
         },
         "DFC:quantity":"2",
