@@ -1,0 +1,27 @@
+{
+  "@context": {
+    "DFC-business": "https://frama.link/DFC-business-ontology",
+    "@base": "http://maPlateformeNationale"
+  },
+  "DFC:Entreprise":{
+    "@id":"/entreprise/maPetiteEntreprise",
+    "DFC:supplies":[
+      {
+        "@id":"/suppliedProduct/item1",
+        "DF:hasUnit":{
+          "@id":"/unit/kg",
+        },
+        "DFC:quantity":"5",
+        "DFC:description":"carotte sable"
+      },
+      {
+        "@id":"/suppliedProduct/item2",
+        "DF:hasUnit":{
+          "@id":"/unit/kg",
+        },
+        "DFC:quantity":"2",
+        "DFC:description":"carotte botte"
+      }
+    ]
+  }
+}

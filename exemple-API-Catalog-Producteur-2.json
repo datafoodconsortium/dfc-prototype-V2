@@ -1,0 +1,27 @@
+{
+  "@context": {
+    "DFC-business": "https://frama.link/DFC-business-ontology",
+    "@base": "http://maPlateformeLocale"
+  },
+  "DFC:Entreprise":{
+    "@id":"/entreprise/maGrandeEntreprise",
+    "DFC:supplies":[
+      {
+        "@id":"/suppliedProduct/item3",
+        "DF:hasUnit":{
+          "@id":"/unit/kg",
+        },
+        "DFC:quantity":"10",
+        "DFC:description":"carotte sable bio"
+      },
+      {
+        "@id":"/suppliedProduct/item4",
+        "DF:hasUnit":{
+          "@id":"/unit/kg",
+        },
+        "DFC:quantity":"2",
+        "DFC:description":"carotte botte nouvelle"
+      }
+    ]
+  }
+}
