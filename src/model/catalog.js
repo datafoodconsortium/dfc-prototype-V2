@@ -39,7 +39,7 @@ export default class Catalog extends GenericElement {
           });
         })
         .catch(function(err) {
-          console.log('Fetch Error :', err);
+          console.error('Fetch Error ',source.url, err);
         });
     })
   }
