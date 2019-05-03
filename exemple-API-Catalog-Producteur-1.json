@@ -1,6 +1,6 @@
 {
   "@context": {
-    "DFC-business": "https://frama.link/DFC-business-ontology",
+    "DFC": "https://raw.githack.com/datafoodconsortium/dfc-prototype-V2/master/DFC_FullModel.owl",
     "@base": "http://maPlateformeNationale"
   },
   "DFC:Entreprise":{
