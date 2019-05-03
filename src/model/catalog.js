@@ -21,6 +21,7 @@ export default class Catalog extends GenericElement {
           if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
               response.status);
+            console.error(response);
             throw new Error(response.status)
           } else {
             return response.json();

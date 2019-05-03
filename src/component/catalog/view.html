@@ -10,9 +10,9 @@
     display: grid;
     /* grid-gap: 10px 15px; */
     grid-template-columns: repeat(4, auto);
-    grid-template-rows: 40px auto;
+    grid-template-rows: 40px repeat(auto-fill,30px);
     overflow-y : auto;
-    height : 100px;
+    height : 500px;
 
   }
 
@@ -21,6 +21,9 @@
     background-color: black;
     position : sticky;
     top : 0;
+  }
+  .cell{
+    height: 30px;
   }
 
 </style>

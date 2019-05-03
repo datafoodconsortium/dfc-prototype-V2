@@ -38,9 +38,9 @@ export default class Catalog extends GenericElement {
     console.log('data received',data);
     data.products.forEach(item=>{
       this.addCell(data.source);
-      this.addCell(item['DFC:description']);
-      this.addCell(item['DFC:quantity']);
-      this.addCell(item['DFC:hasUnit']['@id'])
+      this.addCell(item['DFC:description'],'cell');
+      this.addCell(item['DFC:quantity'],'cell');
+      this.addCell(item['DFC:hasUnit']['@id'],'cell')
 
     })
   }
