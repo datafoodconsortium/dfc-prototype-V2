@@ -17,7 +17,7 @@ export default class Catalog extends GenericElement {
   loadAll() {
     console.log(config);
     config.sources.forEach(source => {
-      fetch(source).then(response => {
+      fetch(source.url).then(response => {
           if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
               response.status);
@@ -27,7 +27,10 @@ export default class Catalog extends GenericElement {
           }
         }).then(data => {
           console.log(data);
-          let out = data['DFC:Entreprise']['DFC:supplies'];
+          let out = {
+            source:source.name,
+            products :data['DFC:Entreprise']['DFC:supplies']
+          }
           console.log(out);
           this.publish({
             channel: 'catalog',

@@ -13,32 +13,35 @@ export default class Catalog extends GenericElement {
   }
   connectedCallback() {
     super.connectedCallback();
+    this.catalogList = this.shadowRoot.getElementById('catalogList');
     this.publish({
       channel: 'catalog',
       topic: 'loadAll'
     });
+    this.addCell('source','header');
+    this.addCell('desription','header');
+    this.addCell('package','header');
+    this.addCell('unit','header');
+  }
+  addCell(value,css){
+    let div = document.createElement('div');
+    this.catalogList.appendChild(div);
+    if(css !=undefined){
+      div.classList.add(css);
+    }
+    let text = document.createTextNode(value);
+    div.appendChild(text);
   }
 
   setData(data) {
     let catalogList =this.shadowRoot.getElementById('catalogList');
     console.log('data received',data);
-    data.forEach(item=>{
-      let divDesc = document.createElement('div');
-      catalogList.appendChild(divDesc);
-      let textDesc = document.createTextNode(item['DFC:description']);
-      divDesc.appendChild(textDesc);
+    data.products.forEach(item=>{
+      this.addCell(data.source);
+      this.addCell(item['DFC:description']);
+      this.addCell(item['DFC:quantity']);
+      this.addCell(item['DFC:hasUnit']['@id'])
 
-
-      let divQuantity = document.createElement('div');
-      catalogList.appendChild(divQuantity);
-      let textQuantity = document.createTextNode(item['DFC:quantity']);
-      divQuantity.appendChild(textQuantity);
-
-
-      let divUnit = document.createElement('div');
-      catalogList.appendChild(divUnit);
-      let textUnit = document.createTextNode(item['DFC:hasUnit']['@id']);
-      divUnit.appendChild(textDesc);
     })
   }
 }
