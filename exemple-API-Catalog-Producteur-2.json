@@ -11,16 +11,16 @@
         "DFC:hasUnit":{
           "@id":"/unit/kg"
         },
-        "DFC:quantity":"10",
-        "DFC:description":"carotte sable bio"
+        "DFC:quantity":"0,5",
+        "DFC:description":"Aillet botte 1 pièce"
       },
       {
         "@id":"/suppliedProduct/item4",
         "DFC:hasUnit":{
-          "@id":"/unit/kg"
+          "@id":"/unit/unit"
         },
-        "DFC:quantity":"2",
-        "DFC:description":"carotte botte nouvelle"
+        "DFC:quantity":"1",
+        "DFC:description":"Aromates-Romarin Botte 1 pièce"
       }
     ]
   }
