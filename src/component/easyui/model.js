@@ -97,6 +97,8 @@ export default class Easyui extends GenericElement {
 
     this.gridDom.datagrid('getPanel').find('.datagrid-header .datagrid-htable').css('height', '');
     this.gridDom.datagrid('getPanel').find('.datagrid-header').css('height', '');
+    this.gridDomTree.datagrid('getPanel').find('.datagrid-header .datagrid-htable').css('height', '');
+    this.gridDomTree.datagrid('getPanel').find('.datagrid-header').css('height', '');
     // this.gridDom.datagrid('resize');
 
     let injectedStyle = document.createElement('style');
