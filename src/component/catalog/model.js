@@ -13,6 +13,7 @@ export default class Catalog extends GenericElement {
   }
   connectedCallback() {
     super.connectedCallback();
+
     this.catalogList = this.shadowRoot.getElementById('catalogList');
     this.publish({
       channel: 'catalog',
@@ -36,8 +37,8 @@ export default class Catalog extends GenericElement {
   setData(data) {
     let catalogList =this.shadowRoot.getElementById('catalogList');
     console.log('data received',data);
-    data.products.forEach(item=>{
-      this.addCell(data.source);
+    data.forEach(item=>{
+      this.addCell(item['source']);
       this.addCell(item['DFC:description'],'cell');
       this.addCell(item['DFC:quantity'],'cell');
       this.addCell(item['DFC:hasUnit']['@id'],'cell')

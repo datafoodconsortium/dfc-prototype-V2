@@ -4,7 +4,8 @@ import header from '../header/model.js';
 import home from '../home/model.js';
 import menu from '../menu/model.js';
 import screen1 from '../catalog/model.js';
-import screen2 from '../screen2/model.js';
+// import screen3 from '../w2ui/model.js';
+import screen3 from '../easyui/model.js';
 import profil from '../profil/model.js';
 export default class Navigation extends GenericElement {
   constructor() {
@@ -23,6 +24,8 @@ export default class Navigation extends GenericElement {
     console.log(comp);
     let screen = this.shadowRoot.querySelector('#screen');
     let component = document.createElement(comp);
+    component.setAttribute("style", "flex:1");
+    component.classList.add('containerV')
     while (screen.firstChild != null) {
       screen.removeChild(screen.firstChild);
     }

@@ -1,9 +1,21 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = [{
-  entry: ['@babel/polyfill', './src/main.js'],
+  entry: [
+    '@babel/polyfill', 'jquery', './src/main.js'
+  ],
+  // entry: {
+  //   vendor: [
+  //     '@babel/polyfill',
+  //     'jquery'
+  //   ],
+  //   app: [
+  //     './src/main.js',
+  //   ]
+  // },
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
@@ -34,17 +46,27 @@ module.exports = [{
       },
       {
         test: /\.(css|scss)/,
-        // include: [
-        //   path.resolve(__dirname, "app/styles")
-        // ],
-        use: {
+        use: [{
           loader: 'css-loader',
           options: {}
-        }
+        }]
+      },
+
+
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {},
+        }],
       }
     ]
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery'
+    }),
     new HtmlWebpackPlugin({
       inject: false,
       template: 'src/index.html'

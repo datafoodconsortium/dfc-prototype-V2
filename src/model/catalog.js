@@ -11,11 +11,17 @@ export default class Catalog extends GenericElement {
         this.loadAll();
       }
     })
-
   }
 
   loadAll() {
     console.log(config);
+    this.catalogs=[];
+    this.catalogsTree=[];
+    this.publish({
+      channel: 'catalog',
+      topic: 'changeAll',
+      data: this.catalogs
+    });
     config.sources.forEach(source => {
       fetch(source.url).then(response => {
           if (response.status !== 200) {
@@ -28,15 +34,40 @@ export default class Catalog extends GenericElement {
           }
         }).then(data => {
           console.log(data);
-          let out = {
-            source:source.name,
-            products :data['DFC:Entreprise']['DFC:supplies']
-          }
-          console.log(out);
+          let newRecords= data['DFC:Entreprise']['DFC:supplies'].map(record=>{
+            return {
+              source: source.name,
+              'DFC:description': record['DFC:description'],
+              'DFC:quantity': record['DFC:quantity'],
+              'DFC:hasUnit':{
+                '@id':record['DFC:hasUnit']['@id']
+              }
+            }
+          })
+          console.log('newRecords',newRecords);
+          this.catalogs=this.catalogs.concat(newRecords);
+          newRecords.forEach(nr=>{
+            let existingRecord=this.catalogsTree.filter(er=>er['DFC:description']==nr['DFC:description']);
+            if(existingRecord.length>0){
+              existingRecord[0].children.push(nr);
+            }else{
+              let newRoot = {
+                'DFC:description':nr['DFC:description'],
+                children:[nr]
+              };
+              this.catalogsTree.push(newRoot);
+            }
+          })
+          // console.log('this.catalogsTree',this.catalogsTree);
           this.publish({
             channel: 'catalog',
             topic: 'changeAll',
-            data: out
+            data: this.catalogs
+          });
+          this.publish({
+            channel: 'catalog',
+            topic: 'changeAllTree',
+            data: this.catalogsTree
           });
         })
         .catch(function(err) {

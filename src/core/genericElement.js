@@ -1,16 +1,13 @@
 import postal from 'postal';
 export default class GenericElement extends HTMLElement {
-  constructor(view) {
+  constructor(view,shadowRootActiv) {
     super();
     this.subscriptions = [];
     this.propagatedStyle=[];
     this.genericElementChildren=[];
 
     if(view!=undefined){
-      this.attachShadow({
-        mode: 'open'
-      });
-      this.shadowRoot.innerHTML = view;
+      this.appendView(view,shadowRootActiv)
     }
 
     new MutationObserver((mutationsList) => {
@@ -35,9 +32,31 @@ export default class GenericElement extends HTMLElement {
     }
   }
 
+  appendView(view,shadowRootActiv){
+    // console.log('shadowRootActivBefore',shadowRootActiv);
+    shadowRootActiv=shadowRootActiv==undefined?true:shadowRootActiv;
+    // console.log('shadowRootActiv',shadowRootActiv);
+    if (shadowRootActiv==true){
+      this.attachShadow({
+        mode: 'open'
+      });
+      this.shadowRoot.innerHTML = view;
+    }else{
+      this.innerHTML = view;
+      console.log('innerHTML',this.innerHTML);
+    }
+
+    console.log('OK');
+  }
+
   appendPropagatedStyle(injectedStyle){
     this.propagatedStyle.push(injectedStyle);
-    this.shadowRoot.appendChild(injectedStyle);
+    if(this.shadowRoot!=undefined){
+      this.shadowRoot.appendChild(injectedStyle);
+    }else{
+      // this.appendChild(injectedStyle);
+    }
+
     this.genericElementChildren.forEach(child=>{
       child.appendPropagatedStyle(injectedStyle.cloneNode(true));
     })

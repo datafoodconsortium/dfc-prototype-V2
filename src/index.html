@@ -7,7 +7,9 @@
     <script src="./<%= htmlWebpackPlugin.files.js[index] %>"></script>
   <% } %>
 </head>
+
 <body>
+  <div id="myGrid2" style="height: 450px"></div>
   <x-service-catalog></x-service-catalog>
   <x-navigation>
     <style>
@@ -20,5 +22,6 @@
 </body>
 <style>
 <%=require('./style/colors.css') %>
+
 </style>
 </html>
