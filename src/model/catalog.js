@@ -15,8 +15,8 @@ export default class Catalog extends GenericElement {
 
   loadAll() {
     console.log(config);
-    this.catalogs=[];
-    this.catalogsTree=[];
+    this.catalogs = [];
+    this.catalogsTree = [];
     this.publish({
       channel: 'catalog',
       topic: 'changeAll',
@@ -33,27 +33,33 @@ export default class Catalog extends GenericElement {
             return response.json();
           }
         }).then(data => {
-          console.log(data);
-          let newRecords= data['DFC:Entreprise']['DFC:supplies'].map(record=>{
+          console.log(source.url, data);
+          let newRecords = data['DFC:Entreprise']['DFC:supplies'].map(record => {
             return {
               source: source.name,
               'DFC:description': record['DFC:description'],
               'DFC:quantity': record['DFC:quantity'],
-              'DFC:hasUnit':{
-                '@id':record['DFC:hasUnit']['@id']
+              'DFC:hasUnit': {
+                '@id': record['DFC:hasUnit']['@id']
               }
             }
           })
-          console.log('newRecords',newRecords);
-          this.catalogs=this.catalogs.concat(newRecords);
-          newRecords.forEach(nr=>{
-            let existingRecord=this.catalogsTree.filter(er=>er['DFC:description']==nr['DFC:description']);
-            if(existingRecord.length>0){
+
+          console.log('newRecords', newRecords);
+          this.catalogs = this.catalogs.concat(newRecords);
+          this.catalogs.sort((a, b) => {
+            let dif = a['DFC:description'].localeCompare(b['DFC:description']);
+            // console.log(dif);
+            return dif;
+          });
+          newRecords.forEach(nr => {
+            let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
+            if (existingRecord.length > 0) {
               existingRecord[0].children.push(nr);
-            }else{
+            } else {
               let newRoot = {
-                'DFC:description':nr['DFC:description'],
-                children:[nr]
+                'DFC:description': nr['DFC:description'],
+                children: [nr]
               };
               this.catalogsTree.push(newRoot);
             }
@@ -71,7 +77,7 @@ export default class Catalog extends GenericElement {
           });
         })
         .catch(function(err) {
-          console.error('Fetch Error ',source.url, err);
+          console.error('Fetch Error ', source.url, err);
         });
     })
   }

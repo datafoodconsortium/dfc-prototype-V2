@@ -40,21 +40,25 @@ export default class Easyui extends GenericElement {
         [{
             field: 'description',
             title: 'description',
-            width: 300
+            width: 300,
+            sortable :true,
           },
           {
             field: 'quantity',
             title: 'quantity',
-            width: 100
+            width: 100,
+            sortable :true
           }, {
             field: 'unit',
             title: 'unit',
-            width: 100
+            width: 100,
+            sortable :true
           },
           {
             field: 'source',
             title: 'source',
-            width: 200
+            width: 200,
+            sortable :true
           }
         ]
       ]
