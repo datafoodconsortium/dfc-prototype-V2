@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = [{
   entry: [
-    '@babel/polyfill', 'jquery', './src/main.js'
+    '@babel/polyfill', 'jquery', './src/ui/main.js'
   ],
   // entry: {
   //   vendor: [
@@ -19,7 +19,7 @@ module.exports = [{
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'dist/ui')
   },
   optimization: {
     splitChunks: {
@@ -69,7 +69,7 @@ module.exports = [{
     }),
     new HtmlWebpackPlugin({
       inject: false,
-      template: 'src/index.html'
+      template: 'src/ui/index.html'
     })
   ]
 }];
