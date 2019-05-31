@@ -6,7 +6,7 @@
     "build": "webpack --devtool eval-source-map",
     "buildProd": "webpack",
     "prebuild": "npm run copy",
-    "copy": "cpx ./src/server/*.* ./dist/server",
+    "copy": "cpx ./src/server/*.* ./dist/server && cpx ./src/config/*.* ./dist/config",
     "precopy": "npm run clean",
     "clean": "rimraf dist && mkdirp dist",
     "start": "http-server dist -c-1 -p 8086",

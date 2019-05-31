@@ -1,6 +1,6 @@
 import Navigo from 'navigo';
 import GenericElement from '../core/genericElement.js';
-import config from '../config.json';
+import config from '../../config/config.json';
 export default class Catalog extends GenericElement {
   constructor() {
     super();

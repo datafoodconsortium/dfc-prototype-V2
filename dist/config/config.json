@@ -1,0 +1,14 @@
+{
+  "sources": [{
+      "name": "cagette",
+      "url": "https://grappe.io/data/api/5ccc879f8dcde8003322d8ee-DFC-fake-source-cagette"
+    }, {
+      "name": "panier locale",
+      "url": "https://grappe.io/data/api/5cee1a43d16fdd002b9a3db6-DFC-fake-source-panier-locale"
+    }, {
+      "name": "la ruche qui dit oui",
+      "url": "https://api.thefoodassembly.com/dfc/catalog/5100"
+    }
+
+  ]
+}
