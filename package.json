@@ -9,7 +9,8 @@
     "copy": "cpx ./src/server/*.* ./dist/server && cpx ./src/config/*.* ./dist/config",
     "precopy": "npm run clean",
     "clean": "rimraf dist && mkdirp dist",
-    "start": "http-server dist -c-1 -p 8086",
+    "start": "node ./dist/server/app.js",
+    "startUIAlone": "http-server dist -c-1 -p 8086",
     "prestart": "npm run build"
   },
   "author": "",
@@ -38,9 +39,12 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@webcomponents/webcomponentsjs": "^1.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "jquery": "^3.4.1",
     "navigo": "^7.1.2",
     "postal": "^2.0.5",
+    "request": "^2.88.0",
     "sift": "^7.0.1",
     "w2ui": "^1.4.3"
   }
