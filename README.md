@@ -1,10 +1,10 @@
 # dfc-prototype-V2
 
-# to run
+## to run
 make start
 
-# to stop
+## to stop
 make stop
 
-# to log
+## to log
 make log
