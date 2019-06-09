@@ -1,0 +1,35 @@
+version: '3.0'
+services:
+  main:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: app
+    image: dfc/app
+    environment:
+        - APP_PORT=8080
+        - NODE_ENV=development_docker
+        - CONFIG_URL=$CONFIG_URL
+    volumes:
+      - ./src:/home/node/app/src
+    links:
+        - mongodb
+    depends_on:
+        - mongodb
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    command: ["nodemon", "--exec", "npm start","-e","js,html,css","--watch", "src", "--ignore", "configuration.js"]
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - mongodb:/data/db
+    command: --smallfiles
+volumes:
+  mongodb:

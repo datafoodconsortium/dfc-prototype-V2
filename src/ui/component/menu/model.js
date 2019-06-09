@@ -4,6 +4,7 @@ export default class Menu extends GenericElement {
   constructor() {
     super(view);
   }
+  
   connectedCallback() {
     super.connectedCallback();
   }
