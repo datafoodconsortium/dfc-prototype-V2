@@ -18,7 +18,7 @@ class MongoClient {
     this.mongoose = require('mongoose');
     this.mongoose.Promise = Promise;
     // const conStr = this.config.mlabDB;
-    const conStr ='mongodb://localhost:27017'
+    const conStr ='mongodb://mongodb:27017'
     // console.log()
     const db = this.mongoose.createConnection(conStr);
     // CONNECTION EVENTS

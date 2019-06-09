@@ -9,7 +9,7 @@ const request = require('request');
 const env = process.env;
 const fs = require('fs');
 let url = env.CONFIG_URL;
-const mongo_client= require('mongo_client');
+const mongo_client= require('./mongo_client');
 url = "http://datafoodconsortium.org:80/dfc-prototype-V2/dist/config/config.json"
 // url = "https://data-players.github.io/StrongBox/public/dev-linux.json"
 
@@ -43,7 +43,7 @@ request(url, { json: true }, (err, result, body) => {
         app.listen(port, function (err) {
           console.log('serveur started at port', port);
           mongo_client.getInstance();
-          console.log('ALLO');
+          console.log('ALLO3');
         })
       }
     })
