@@ -21,7 +21,7 @@ class MongoClient {
     // const conStr = this.config.mlabDB;
     const conStr ='mongodb://mongodb:27017'
     // console.log()
-    const db = this.mongoose.createConnection(conStr);
+    const db = this.mongoose.createConnection(this.config.mongoConnection);
     // CONNECTION EVENTS
     // When successfully connected
     db.on('connected', function() {
