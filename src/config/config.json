@@ -1,4 +1,5 @@
 {
+  "mongoConnection" : "mongodb://mongodb:27017",
   "sources": [{
       "name": "cagette",
       "url": "https://grappe.io/data/api/5ccc879f8dcde8003322d8ee-DFC-fake-source-cagette"

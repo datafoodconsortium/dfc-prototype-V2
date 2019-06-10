@@ -26,7 +26,7 @@ request(url, { json: true }, (err, result, body) => {
   if(err==undefined){
     const configJson = result.body
     const content = 'module.exports = ' + JSON.stringify(result.body)
-    fs.writeFile('configuration.js', content, 'utf8', function (err) {
+    fs.writeFile('./configuration.js', content, 'utf8', function (err) {
       if (err) {
         throw err
       } else {
@@ -43,7 +43,6 @@ request(url, { json: true }, (err, result, body) => {
         app.listen(port, function (err) {
           console.log('serveur started at port', port);
           mongo_client.getInstance();
-          console.log('ALLO3');
         })
       }
     })

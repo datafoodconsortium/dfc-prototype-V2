@@ -13,14 +13,15 @@ class MongoClientSingleton {
 
 class MongoClient {
   constructor() {
-    //this.config = require('../getConfiguration.js')();
+    this.config = require('./../../configuration.js');
+    console.log('config',this.config);
     // console.log(this.config)
     this.mongoose = require('mongoose');
     this.mongoose.Promise = Promise;
     // const conStr = this.config.mlabDB;
     const conStr ='mongodb://mongodb:27017'
     // console.log()
-    const db = this.mongoose.createConnection(conStr);
+    const db = this.mongoose.createConnection(this.config.mongoConnection);
     // CONNECTION EVENTS
     // When successfully connected
     db.on('connected', function() {
