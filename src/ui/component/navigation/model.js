@@ -7,6 +7,7 @@ import screen1 from '../catalog/model.js';
 // import screen3 from '../w2ui/model.js';
 import screen3 from '../easyui/model.js';
 import profil from '../profil/model.js';
+import importCatalog from '../importCatalog/model.js';
 export default class Navigation extends GenericElement {
   constructor() {
     super(view);

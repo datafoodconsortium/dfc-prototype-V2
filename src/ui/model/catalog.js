@@ -1,19 +1,56 @@
 import Navigo from 'navigo';
 import GenericElement from '../core/genericElement.js';
 import config from '../../config/config.json';
+import Util from './util.js'
 export default class Catalog extends GenericElement {
   constructor() {
     super();
+    this.util = new Util();
     this.subscribe({
       channel: 'catalog',
       topic: 'loadAll',
       callback: (data) => {
-        this.loadAll();
+        this.loadAllFront();
       }
+    });
+    this.subscribe({
+      channel: 'source',
+      topic: 'getAll',
+      callback: (data) => {
+        this.getSources();
+      }
+    });
+
+    this.subscribe({
+      channel: 'source',
+      topic: 'importOne',
+      callback: (data) => {
+        this.importOne(data.source);
+      }
+    });
+  }
+
+  importOne(source) {
+    // let sourceObject = config.sources.filter(so => so.name == source)[0];
+    // console.log('importOne',sourceObject);
+    let url = '/data/core/products/import?source=' + source;
+    let option = {
+      method: 'POST'
+    };
+    this.util.ajaxCall(url,option).then(data => {
+      console.log('resolve ajaxCall', data);
     })
   }
 
-  loadAll() {
+  getSources() {
+    this.publish({
+      channel: 'source',
+      topic: 'changeAll',
+      data: config.sources
+    });
+  }
+
+  loadAllFront() {
     console.log(config);
     this.catalogs = [];
     this.catalogsTree = [];

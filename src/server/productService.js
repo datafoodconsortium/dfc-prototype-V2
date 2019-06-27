@@ -1,5 +1,6 @@
-const mongo_client = require('./mongo_client');
-const mongoose = require('mongoose');
+// const mongo_client = require('./mongo_client');
+// const mongoose = require('mongoose');
+const supplyModel = require('./supplyModel');
 const request = require('request');
 
 module.exports = function (router) {
@@ -7,32 +8,38 @@ module.exports = function (router) {
   // Get workspaces
 
   router.get('/products/me', async (req, res, next)=>{
-    let mongoclient = mongo_client.getInstance();
+    // let mongoclient = mongo_client.getInstance();
 
-    let model = mongoclient.connection.model('supply', new mongoose.Schema({}, {
-      strict: false
-    }));
+    // let model = mongoclient.connection.model('supply', new mongoose.Schema({}, {
+    //   strict: false
+    // }));
 
-    let products = await model.find({});
+    let products = await supplyModel.model.find({});
     console.log('products',products);
     res.json(products)
   })
 
   router.post('/products/import', async (req, res, next)=>{
-    request(this.config.sources[1].url, {
+
+    // let url = req.query.url;
+    let source = decodeURI(req.query.source);
+    console.log('source',source,this.config.sources);
+    let sourceObject = this.config.sources.filter(so => so.name == source)[0];
+    console.log('url',sourceObject.url);
+    request(sourceObject.url, {
       json: true
     }, async (err, result, body) => {
-      let supplies = result.body['DFC:Entreprise']['DFC:supplies'];
-      console.log('first source', supplies);
-      let mongoclient = mongo_client.getInstance();
+      try {
+        let supplies = result.body['DFC:Entreprise']['DFC:supplies'];
+        await supplyModel.model.remove({});
+        let inserted = await supplyModel.model.insertMany(supplies);
+        res.json(inserted)
+      } catch (e) {
+        res.status(500).send({error:e});
+      } finally {
 
-      let model = mongoclient.connection.model('supply', new mongoose.Schema({}, {
-        strict: false
-      }));
+      }
 
-      await model.remove({});
-      let inserted = await model.insertMany(supplies);
-      res.json(inserted)
 
     })
   })
