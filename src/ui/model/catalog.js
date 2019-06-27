@@ -10,7 +10,7 @@ export default class Catalog extends GenericElement {
       channel: 'catalog',
       topic: 'loadAll',
       callback: (data) => {
-        this.loadAllFront();
+        this.loadAllBack();
       }
     });
     this.subscribe({
@@ -28,6 +28,25 @@ export default class Catalog extends GenericElement {
         this.importOne(data.source);
       }
     });
+
+    this.subscribe({
+      channel: 'source',
+      topic: 'clean',
+      callback: (data) => {
+        this.cleanAll();
+      }
+    });
+  }
+
+  cleanAll(source) {
+    let url = '/data/core/products/clean';
+    let option = {
+      method: 'POST'
+    };
+    this.util.ajaxCall(url,option).then(data => {
+      console.log('resolve ajaxCall', data);
+      alert('catalogue vidé')
+    })
   }
 
   importOne(source) {
@@ -39,6 +58,7 @@ export default class Catalog extends GenericElement {
     };
     this.util.ajaxCall(url,option).then(data => {
       console.log('resolve ajaxCall', data);
+      alert(source+' bien importé')
     })
   }
 
@@ -48,6 +68,54 @@ export default class Catalog extends GenericElement {
       topic: 'changeAll',
       data: config.sources
     });
+  }
+  loadAllBack() {
+      let url = '/data/core/products/me';
+      this.catalogs = [];
+      this.catalogsTree = [];
+      this.util.ajaxCall(url).then(data => {
+        let newRecords = data.map(record => {
+          return {
+            'source': record['source'],
+            'DFC:description': record['DFC:description'],
+            'DFC:quantity': record['DFC:quantity'],
+            'DFC:hasUnit': {
+              '@id': record['DFC:hasUnit']['@id']
+            }
+          }
+        })
+
+        console.log('newRecords', newRecords);
+        this.catalogs = newRecords;
+        this.catalogs.sort((a, b) => {
+          let dif = a['DFC:description'].localeCompare(b['DFC:description']);
+          // console.log(dif);
+          return dif;
+        });
+        newRecords.forEach(nr => {
+          let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
+          if (existingRecord.length > 0) {
+            existingRecord[0].children.push(nr);
+          } else {
+            let newRoot = {
+              'DFC:description': nr['DFC:description'],
+              children: [nr]
+            };
+            this.catalogsTree.push(newRoot);
+          }
+        })
+        // console.log('this.catalogsTree',this.catalogsTree);
+        this.publish({
+          channel: 'catalog',
+          topic: 'changeAll',
+          data: this.catalogs
+        });
+        this.publish({
+          channel: 'catalog',
+          topic: 'changeAllTree',
+          data: this.catalogsTree
+        });
+      })
   }
 
   loadAllFront() {

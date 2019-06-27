@@ -9,11 +9,10 @@ const request = require('request');
 const env = process.env;
 const fs = require('fs');
 let url = env.CONFIG_URL;
-const mongo_client = require('./mongo_client');
-const mongoose = require('mongoose');
-const productService = require('./productService');
-url = "http://datafoodconsortium.org:80/dfc-prototype-V2/dist/config/config.json"
-// url = "https://data-players.github.io/StrongBox/public/dev-linux.json"
+// const mongo_client = require('./mongo_client');
+// const mongoose = require('mongoose');
+
+url = "http://datafoodconsortium.org/dfc-prototype-V2/src/config/config.json"
 
 app.use(cors())
 app.use(bodyParser.json({
@@ -31,6 +30,7 @@ request(url, {
     const configJson = result.body
     const content = 'module.exports = ' + JSON.stringify(result.body)
     fs.writeFile('./configuration.js', content, 'utf8', function(err) {
+      const productService = require('./productService');
       if (err) {
         throw err
       } else {

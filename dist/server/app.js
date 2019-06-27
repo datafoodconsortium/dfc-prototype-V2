@@ -9,7 +9,9 @@ const request = require('request');
 const env = process.env;
 const fs = require('fs');
 let url = env.CONFIG_URL;
-const mongo_client= require('./mongo_client');
+const mongo_client = require('./mongo_client');
+const mongoose = require('mongoose');
+const productService = require('./productService');
 url = "http://datafoodconsortium.org:80/dfc-prototype-V2/dist/config/config.json"
 // url = "https://data-players.github.io/StrongBox/public/dev-linux.json"
 
@@ -22,31 +24,33 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-request(url, { json: true }, (err, result, body) => {
-  if(err==undefined){
+request(url, {
+  json: true
+}, (err, result, body) => {
+  if (err == undefined) {
     const configJson = result.body
     const content = 'module.exports = ' + JSON.stringify(result.body)
-    fs.writeFile('./configuration.js', content, 'utf8', function (err) {
+    fs.writeFile('./configuration.js', content, 'utf8', function(err) {
       if (err) {
         throw err
       } else {
         console.log('config good');
         app.use('/data/auth', unSafeRouteur);
         app.use('/data/core', safe);
-        app.get('/', function (req, res, next) {
+        productService(safe)
+        app.get('/', function(req, res, next) {
           res.redirect('/ui/')
         })
-        app.use('/ui', express.static(__dirname +'/../ui', {
+        app.use('/ui', express.static(__dirname + '/../ui', {
           etag: false
         }))
         const port = process.env.APP_PORT || 8080
-        app.listen(port, function (err) {
+        app.listen(port, function(err) {
           console.log('serveur started at port', port);
-          mongo_client.getInstance();
         })
       }
     })
-  }else{
+  } else {
     throw err;
   }
 

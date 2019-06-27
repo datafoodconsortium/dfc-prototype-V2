@@ -19,17 +19,17 @@ class MongoClient {
     this.mongoose = require('mongoose');
     this.mongoose.Promise = Promise;
     // const conStr = this.config.mlabDB;
-    const conStr ='mongodb://mongodb:27017'
+    // const conStr ='mongodb://mongodb:27017'
     // console.log()
     const db = this.mongoose.createConnection(this.config.mongoConnection);
     // CONNECTION EVENTS
     // When successfully connected
-    db.on('connected', function() {
-      console.log('Mongoose default connection open to ' + conStr);
+    db.on('connected', ()=>{
+      console.log('Mongoose default connection open to ' + this.config.mongoConnection);
     });
 
     // If the connection throws an error
-    db.on('error', function(err) {
+    db.on('error', (err)=>{
       console.log('Mongoose default connection error: ' + err);
     });
 

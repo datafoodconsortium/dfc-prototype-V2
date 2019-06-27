@@ -6,10 +6,6 @@ const request = require('request');
 module.exports = function (router) {
   this.config = require('./../../configuration.js');
   // Get workspaces
-  router.post('/products/clean', async (req, res, next)=>{
-    await supplyModel.model.remove({});
-    res.json({})
-  })
 
   router.get('/products/me', async (req, res, next)=>{
     // let mongoclient = mongo_client.getInstance();
@@ -35,10 +31,7 @@ module.exports = function (router) {
     }, async (err, result, body) => {
       try {
         let supplies = result.body['DFC:Entreprise']['DFC:supplies'];
-        supplies.forEach(s=>{
-          s.source=source;
-        })
-        await supplyModel.model.remove({source:source});
+        await supplyModel.model.remove({});
         let inserted = await supplyModel.model.insertMany(supplies);
         res.json(inserted)
       } catch (e) {

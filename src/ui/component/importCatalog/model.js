@@ -23,6 +23,13 @@ export default class ImportCatalog extends GenericElement {
       });
     });
 
+    this.shadowRoot.getElementById('clean-button').addEventListener('click', e => {
+      this.publish({
+        channel: 'source',
+        topic: 'clean',
+      });
+    });
+
     console.log('connectedCallback');
     this.publish({
       channel: 'source',
