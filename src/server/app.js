@@ -30,7 +30,7 @@ request(url, {
     const configJson = result.body
     const content = 'module.exports = ' + JSON.stringify(result.body)
     fs.writeFile('./configuration.js', content, 'utf8', function(err) {
-      const productService = require('./productService');
+      const productService = require('./api/product.js');
       if (err) {
         throw err
       } else {

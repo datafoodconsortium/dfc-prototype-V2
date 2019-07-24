@@ -7,10 +7,24 @@ export default class Catalog extends GenericElement {
     super();
     this.util = new Util();
     this.subscribe({
-      channel: 'catalog',
+      channel: 'supply',
       topic: 'loadAll',
       callback: (data) => {
-        this.loadAllBack();
+        this.loadAllSupply();
+      }
+    });
+    this.subscribe({
+      channel: 'import',
+      topic: 'loadAll',
+      callback: (data) => {
+        this.loadAllImport();
+      }
+    });
+    this.subscribe({
+      channel: 'import',
+      topic: 'loadOne',
+      callback: (data) => {
+        this.loadOneImport(data);
       }
     });
     this.subscribe({
@@ -39,11 +53,11 @@ export default class Catalog extends GenericElement {
   }
 
   cleanAll(source) {
-    let url = '/data/core/products/clean';
+    let url = '/data/core/clean';
     let option = {
       method: 'POST'
     };
-    this.util.ajaxCall(url,option).then(data => {
+    this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
       alert('catalogue vidé')
     })
@@ -52,13 +66,13 @@ export default class Catalog extends GenericElement {
   importOne(source) {
     // let sourceObject = config.sources.filter(so => so.name == source)[0];
     // console.log('importOne',sourceObject);
-    let url = '/data/core/products/import?source=' + source;
+    let url = '/data/core/import/import?source=' + source;
     let option = {
       method: 'POST'
     };
-    this.util.ajaxCall(url,option).then(data => {
+    this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
-      alert(source+' bien importé')
+      alert(source + ' bien importé')
     })
   }
 
@@ -69,122 +83,97 @@ export default class Catalog extends GenericElement {
       data: config.sources
     });
   }
-  loadAllBack() {
-      let url = '/data/core/products/me';
-      this.catalogs = [];
-      this.catalogsTree = [];
-      this.util.ajaxCall(url).then(data => {
-        let newRecords = data.map(record => {
-          return {
-            'source': record['source'],
-            'DFC:description': record['DFC:description'],
-            'DFC:quantity': record['DFC:quantity'],
-            'DFC:hasUnit': {
-              '@id': record['DFC:hasUnit']['@id']
-            }
-          }
-        })
-
-        console.log('newRecords', newRecords);
-        this.catalogs = newRecords;
-        this.catalogs.sort((a, b) => {
-          let dif = a['DFC:description'].localeCompare(b['DFC:description']);
-          // console.log(dif);
-          return dif;
-        });
-        newRecords.forEach(nr => {
-          let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
-          if (existingRecord.length > 0) {
-            existingRecord[0].children.push(nr);
-          } else {
-            let newRoot = {
-              'DFC:description': nr['DFC:description'],
-              children: [nr]
-            };
-            this.catalogsTree.push(newRoot);
-          }
-        })
-        // console.log('this.catalogsTree',this.catalogsTree);
-        this.publish({
-          channel: 'catalog',
-          topic: 'changeAll',
-          data: this.catalogs
-        });
-        this.publish({
-          channel: 'catalog',
-          topic: 'changeAllTree',
-          data: this.catalogsTree
-        });
-      })
-  }
-
-  loadAllFront() {
-    console.log(config);
+  loadAllImport() {
+    let url = '/data/core/import';
     this.catalogs = [];
     this.catalogsTree = [];
-    this.publish({
-      channel: 'catalog',
-      topic: 'changeAll',
-      data: this.catalogs
-    });
-    config.sources.forEach(source => {
-      fetch(source.url).then(response => {
-          if (response.status !== 200) {
-            console.log('Looks like there was a problem. Status Code: ' +
-              response.status);
-            console.error(response);
-            throw new Error(response.status)
-          } else {
-            return response.json();
+    this.util.ajaxCall(url).then(data => {
+      let newRecords = data.map(record => {
+        return {
+          '@id': record['@id'],
+          'source': record['source'],
+          'DFC:description': record['DFC:description'],
+          'DFC:quantity': record['DFC:quantity'],
+          'DFC:hasUnit': {
+            '@id': record['DFC:hasUnit']['@id']
           }
-        }).then(data => {
-          console.log(source.url, data);
-          let newRecords = data['DFC:Entreprise']['DFC:supplies'].map(record => {
-            return {
-              source: source.name,
-              'DFC:description': record['DFC:description'],
-              'DFC:quantity': record['DFC:quantity'],
-              'DFC:hasUnit': {
-                '@id': record['DFC:hasUnit']['@id']
-              }
-            }
-          })
+        }
+      })
 
-          console.log('newRecords', newRecords);
-          this.catalogs = this.catalogs.concat(newRecords);
-          this.catalogs.sort((a, b) => {
-            let dif = a['DFC:description'].localeCompare(b['DFC:description']);
-            // console.log(dif);
-            return dif;
-          });
-          newRecords.forEach(nr => {
-            let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
-            if (existingRecord.length > 0) {
-              existingRecord[0].children.push(nr);
-            } else {
-              let newRoot = {
-                'DFC:description': nr['DFC:description'],
-                children: [nr]
-              };
-              this.catalogsTree.push(newRoot);
-            }
-          })
-          // console.log('this.catalogsTree',this.catalogsTree);
-          this.publish({
-            channel: 'catalog',
-            topic: 'changeAll',
-            data: this.catalogs
-          });
-          this.publish({
-            channel: 'catalog',
-            topic: 'changeAllTree',
-            data: this.catalogsTree
-          });
-        })
-        .catch(function(err) {
-          console.error('Fetch Error ', source.url, err);
-        });
+      console.log('newRecords', newRecords);
+      this.catalogs = newRecords;
+      this.catalogs.sort((a, b) => {
+        let dif = a['DFC:description'].localeCompare(b['DFC:description']);
+        // console.log(dif);
+        return dif;
+      });
+      newRecords.forEach(nr => {
+        let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
+        if (existingRecord.length > 0) {
+          existingRecord[0].children.push(nr);
+        } else {
+          let newRoot = {
+            'DFC:description': nr['DFC:description'],
+            children: [nr]
+          };
+          this.catalogsTree.push(newRoot);
+        }
+      })
+      // console.log('this.catalogsTree',this.catalogsTree);
+      this.publish({
+        channel: 'import',
+        topic: 'changeAll',
+        data: this.catalogs
+      });
+      this.publish({
+        channel: 'import',
+        topic: 'changeAllTree',
+        data: this.catalogsTree
+      });
     })
   }
+
+  loadOneImport(id) {
+    let url = `/data/core/import/${id}`;
+    this.util.ajaxCall(url).then(data => {
+      this.selectedImport=data;
+      console.log('loadOneImport',this.selectedImport);
+      this.publish({
+        channel: 'import',
+        topic: 'changeOne',
+        data: this.selectedImport
+      });
+    })
+  }
+
+  loadAllSupply() {
+    let url = '/data/core/supply';
+    this.catalogs = [];
+    this.catalogsTree = [];
+    this.util.ajaxCall(url).then(data => {
+      let newRecords = data.map(record => {
+        return {
+          'imports': record['imports'],
+          'DFC:description': record['DFC:description']
+        }
+      })
+
+      console.log('newRecords', newRecords);
+      this.catalogs = newRecords;
+      this.catalogs.sort((a, b) => {
+        let dif = a['DFC:description'].localeCompare(b['DFC:description']);
+        // console.log(dif);
+        return dif;
+      });
+
+      // console.log('this.catalogsTree',this.catalogsTree);
+      this.publish({
+        channel: 'supply',
+        topic: 'changeAll',
+        data: this.catalogs
+      });
+    })
+  }
+
 }
 window.customElements.define('x-service-catalog', Catalog);

@@ -13,7 +13,7 @@ class MongoClientSingleton {
 
 class MongoClient {
   constructor() {
-    this.config = require('./../../configuration.js');
+    this.config = require('./../../../configuration.js');
     console.log('config',this.config);
     // console.log(this.config)
     this.mongoose = require('mongoose');

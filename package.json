@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "webpack --devtool eval-source-map",
+    "build": "webpack -d",
     "buildProd": "webpack",
     "prebuild": "npm run copy",
-    "copy": "cpx \"./src/server/*.*\" \"./dist/server\" && cpx \"./src/config/*.*\" \"./dist/config\"",
+    "copy": "cpx \"./src/server/**/*.*\" \"./dist/server\" && cpx \"./src/config/*.*\" \"./dist/config\"",
     "precopy": "npm run clean",
     "clean": "rimraf dist && mkdirp dist",
     "start": "node ./dist/server/app.js",

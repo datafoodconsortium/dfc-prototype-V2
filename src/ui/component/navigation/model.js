@@ -3,11 +3,14 @@ import view from 'html-loader!./view.html';
 import header from '../header/model.js';
 import home from '../home/model.js';
 import menu from '../menu/model.js';
-import screen1 from '../catalog/model.js';
+// import screen1 from '../catalog/model.js';
 // import screen3 from '../w2ui/model.js';
-import screen3 from '../easyui/model.js';
+import catalogImport from '../catalogImport/model.js';
+import catalogIntegration from '../catalogSupply/model.js';
+import itemImport from '../itemImport/model.js';
 import profil from '../profil/model.js';
 import importCatalog from '../importCatalog/model.js';
+
 export default class Navigation extends GenericElement {
   constructor() {
     super(view);

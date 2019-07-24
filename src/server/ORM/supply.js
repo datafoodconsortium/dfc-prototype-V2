@@ -5,7 +5,12 @@ const mongoose = require('mongoose');
 class SupplyModel {
   constructor() {
     let mongoclient = mongo_client.getInstance();
-    this._model = mongoclient.connection.model('supply', new mongoose.Schema({}, {
+    this._model = mongoclient.connection.model('supply', new mongoose.Schema({
+      imports: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "import"
+      }]
+    }, {
       strict: false
     }))
   }
