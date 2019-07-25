@@ -5,7 +5,16 @@ const mongoose = require('mongoose');
 class ImportModel {
   constructor() {
     let mongoclient = mongo_client.getInstance();
-    this._model = mongoclient.connection.model('import', new mongoose.Schema({}, {
+    this._model = mongoclient.connection.model('import', new mongoose.Schema({
+      supply: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "supply"
+      },
+      "DFC:description": {
+        type: String,
+        //required: true
+      },
+    }, {
       strict: false
     }))
   }

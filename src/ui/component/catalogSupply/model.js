@@ -53,7 +53,7 @@ export default class CatalogSupply extends GenericElement {
       ]
     });
     // this.gridDom.datagrid('loadData', dataEasyUi);
-        console.warn('ALLO');
+        // console.warn('ALLO');
 
     this.publish({
       channel: 'supply',
@@ -94,6 +94,7 @@ export default class CatalogSupply extends GenericElement {
         children: d.imports.map(c => {
           counter++;
           return {
+            id:counter,
             source: c.source,
             description: c['DFC:description'],
             quantity: c['DFC:quantity'],

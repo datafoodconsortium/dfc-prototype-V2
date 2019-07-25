@@ -13,6 +13,15 @@ export default class Catalog extends GenericElement {
         this.loadAllSupply();
       }
     });
+
+    this.subscribe({
+      channel: 'import',
+      topic: 'convert',
+      callback: (data) => {
+        this.convertImportToSupply(data.importId,data.supplyId);
+      }
+    });
+
     this.subscribe({
       channel: 'import',
       topic: 'loadAll',
@@ -73,6 +82,21 @@ export default class Catalog extends GenericElement {
     this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
       alert(source + ' bien importé')
+    })
+  }
+
+  convertImportToSupply(importId,supplyId) {
+    let url = `/data/core/import/${importId}/convert/${supplyId==undefined?'':supplyId}`;
+    let option = {
+      method: 'POST'
+    };
+    this.util.ajaxCall(url, option).then(data => {
+      console.log('import converti',data);
+      this.publish({
+        channel: 'import',
+        topic: 'convert.done',
+        data: data
+      });
     })
   }
 
@@ -153,6 +177,7 @@ export default class Catalog extends GenericElement {
     this.util.ajaxCall(url).then(data => {
       let newRecords = data.map(record => {
         return {
+          'id': record['_id'],
           'imports': record['imports'],
           'DFC:description': record['DFC:description']
         }

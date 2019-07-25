@@ -1,17 +1,54 @@
-<div id="main" class="containerH">
-  <div class="containerV">
-    <h1>produits non consolidés</h1>
+<div id="main" style="flex:1">
+  <table style="height:100%;width:100%">
+    <tr style="height:30px">
+      <td>
+        <h1>produits non consolidés</h1>
+      </td>
+    </tr>
+    <tr style="height:100px">
+      <td>
+        <div class="containerH">
+          <div class="field">
+            <label>description</label>
+            <div name="description"></div>
+          </div>
+          <div class="field">
+            <label>unité</label>
+            <div name="unit"></div>
+          </div>
+          <div class="field">
+            <label>quantité</label>
+            <div name="quantity"></div>
+          </div>
+          <div class="field">
+            <label>source</label>
+            <div name="source"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr style="height:30px">
+      <td>
+        <h2>associer cet import avec un produit du catalogue</h2>
+      </td>
+      <td>
+        <div class="containerV">
+          <button id="link">consolider</button>
+          <button id="linkEmpty">nouveau produit</button>
+        </div>
 
-    <label>description</label>
-    <div name="description"></div>
-    <label>unité</label>
-    <div name="unit"></div>
-    <label>quantité</label>
-    <div name="quantity"></div>
-    <label>source</label>
-    <div name="source"></div>
-  </div>
+      </td>
+    </tr>
+    <tr style="height:100%">
+      <td>
+        <div id="treeGrid">
+        </div>
+      </td>
+    </tr>
+  </table>
 </div>
 <style>
-
+  .field{
+    padding: 20px
+  }
 </style>

@@ -17,6 +17,13 @@ module.exports = function (router) {
     let out= await supplyAndImport.getAllImport();
     res.json(out)
   })
+  router.post('/import/:idImport(*)/convert/:idSupply?', async (req, res, next)=>{
+    let idImport= req.params.idImport;
+    let idSupply= req.params.idSupply;
+    console.log(idImport,idSupply);
+    let out= await supplyAndImport.convertImportIdToSupplyId(idImport,idSupply);
+    res.json(out)
+  })
 
   router.get('/import/:id(*)', async (req, res, next)=>{
     let out= await supplyAndImport.getOneImport(req.params.id);

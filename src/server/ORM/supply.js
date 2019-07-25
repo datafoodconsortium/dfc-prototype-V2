@@ -9,13 +9,17 @@ class SupplyModel {
       imports: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "import"
-      }]
+      }],
+      "DFC:description": {
+        type: String,
+        //required: true
+      },
     }, {
       strict: false
     }))
   }
 
-  get model(){
+  get model() {
     return this._model;
   }
 }
