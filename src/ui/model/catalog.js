@@ -13,6 +13,29 @@ export default class Catalog extends GenericElement {
         this.loadAllSupply();
       }
     });
+    this.subscribe({
+      channel: 'supply',
+      topic: 'loadOne',
+      callback: (data) => {
+        this.loadOneSupply(data);
+      }
+    });
+
+    this.subscribe({
+      channel: 'supply',
+      topic: 'unlink',
+      callback: (data) => {
+        this.unlinkSupply(data.supply,data.import);
+      }
+    });
+
+    this.subscribe({
+      channel: 'supply',
+      topic: 'update',
+      callback: (data) => {
+        this.updateSupply(data);
+      }
+    });
 
     this.subscribe({
       channel: 'import',
@@ -59,6 +82,22 @@ export default class Catalog extends GenericElement {
         this.cleanAll();
       }
     });
+
+    this.subscribe({
+      channel: 'user',
+      topic: 'set',
+      callback: (data) => {
+        this.setUser(data);
+      }
+    });
+
+    this.subscribe({
+      channel: 'user',
+      topic: 'get',
+      callback: (data) => {
+        this.getUser();
+      }
+    });
   }
 
   cleanAll(source) {
@@ -75,7 +114,7 @@ export default class Catalog extends GenericElement {
   importOne(source) {
     // let sourceObject = config.sources.filter(so => so.name == source)[0];
     // console.log('importOne',sourceObject);
-    let url = '/data/core/import/import?source=' + source;
+    let url = '/data/core/import/importSource?source=' + source;
     let option = {
       method: 'POST'
     };
@@ -131,29 +170,29 @@ export default class Catalog extends GenericElement {
         // console.log(dif);
         return dif;
       });
-      newRecords.forEach(nr => {
-        let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
-        if (existingRecord.length > 0) {
-          existingRecord[0].children.push(nr);
-        } else {
-          let newRoot = {
-            'DFC:description': nr['DFC:description'],
-            children: [nr]
-          };
-          this.catalogsTree.push(newRoot);
-        }
-      })
+      // newRecords.forEach(nr => {
+      //   let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
+      //   if (existingRecord.length > 0) {
+      //     existingRecord[0].children.push(nr);
+      //   } else {
+      //     let newRoot = {
+      //       'DFC:description': nr['DFC:description'],
+      //       children: [nr]
+      //     };
+      //     this.catalogsTree.push(newRoot);
+      //   }
+      // })
       // console.log('this.catalogsTree',this.catalogsTree);
       this.publish({
         channel: 'import',
         topic: 'changeAll',
         data: this.catalogs
       });
-      this.publish({
-        channel: 'import',
-        topic: 'changeAllTree',
-        data: this.catalogsTree
-      });
+      // this.publish({
+      //   channel: 'import',
+      //   topic: 'changeAllTree',
+      //   data: this.catalogsTree
+      // });
     })
   }
 
@@ -169,6 +208,8 @@ export default class Catalog extends GenericElement {
       });
     })
   }
+
+
 
   loadAllSupply() {
     let url = '/data/core/supply';
@@ -199,6 +240,75 @@ export default class Catalog extends GenericElement {
       });
     })
   }
+
+  loadOneSupply(id) {
+    let url = `/data/core/supply/${id}`;
+    this.util.ajaxCall(url).then(data => {
+      this.selectedSupply=data;
+      // console.log('loadOneSupply',this.selectedSupply);
+      this.publish({
+        channel: 'supply',
+        topic: 'changeOne',
+        data: this.selectedSupply
+      });
+    })
+  }
+
+  unlinkSupply(supply,importItem){
+    // console.log('supply',supply);
+    // console.log('import',importItem);
+    supply.imports=supply.imports.filter(i=>i._id!=importItem._id);
+    console.log('supply after',supply);
+    let url = '/data/core/supply/';
+    let option = {
+      method: 'POST',
+      body:JSON.stringify(supply)
+    };
+    this.util.ajaxCall(url, option).then(data => {
+      this.selectedSupply=data;
+      // console.log('loadOneSupply',this.selectedSupply);
+      this.publish({
+        channel: 'supply',
+        topic: 'changeOne',
+        data: this.selectedSupply
+      });
+    })
+  }
+
+  updateSupply(supply){
+    let url = '/data/core/supply/';
+    let option = {
+      method: 'POST',
+      body:JSON.stringify(supply)
+    };
+    this.util.ajaxCall(url, option).then(data => {
+      this.selectedSupply=data;
+      // console.log('loadOneSupply',this.selectedSupply);
+      this.publish({
+        channel: 'supply',
+        topic: 'changeOne',
+        data: this.selectedSupply
+      });
+    })
+  }
+
+  setUser(data){
+    this.user=data;
+    this.publish({
+      channel: 'user',
+      topic: 'changeOne',
+      data: this.user
+    });
+  }
+
+  getUser(data){
+    this.publish({
+      channel: 'user',
+      topic: 'changeOne',
+      data: this.user
+    });
+  }
+
 
 }
 window.customElements.define('x-service-catalog', Catalog);

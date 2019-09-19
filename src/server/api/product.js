@@ -35,7 +35,22 @@ module.exports = function (router) {
     res.json(out)
   })
 
-  router.post('/import/import', async (req, res, next)=>{
+  router.post('/supply', async (req, res, next)=>{
+    try {
+      let out= await supplyAndImport.updateOneSupply(req.body);
+      res.json(out)
+    } catch (e) {
+      next(e)
+    }
+  })
+
+  router.get('/supply/:id', async (req, res, next)=>{
+    console.log('supply',req.params.id);
+    let out= await supplyAndImport.getOneSupply(req.params.id);
+    res.json(out)
+  })
+
+  router.post('/import/importSource', async (req, res, next)=>{
     let source = decodeURI(req.query.source);
     let out= await supplyAndImport.importSource(source);
     res.json(out)

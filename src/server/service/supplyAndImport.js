@@ -59,8 +59,47 @@ class SupplyAndImport {
         //   })
         // })
 
-        console.log('supplies completed', supplies);
+        // console.log('supplies completed', supplies);
         resolve(supplies);
+      } catch (e) {
+        reject(e);
+      }
+    })
+  }
+
+  getOneSupply(id){
+    return new Promise(async (resolve, reject) => {
+      try {
+        let product = await supplyModel.model.findById(id).populate('imports');
+        // console.log('products', products);
+        resolve(product);
+      } catch (e) {
+        reject(e);
+      }
+    })
+  }
+
+  updateOneSupply(supply){
+    return new Promise(async (resolve, reject) => {
+      try {
+        let product = await supplyModel.model.findById(supply._id).populate('imports');
+        console.log(product);
+        let newImports=supply.imports.filter(i=>product.imports.filter(i2=>i2._id==i._id).length==0);
+        newImports.forEach(async i=>{
+          i.supply=product._id;
+          await i.save();
+          // await this.convertImportToSupply(i,product);
+        })
+        let oldImports=product.imports.filter(i=>supply.imports.filter(i2=>i2._id==i._id).length==0);
+        oldImports.forEach(async i=>{
+          i.supply=undefined;
+          await i.save();
+        })
+        product['DFC:description']=supply['DFC:description']
+        product.imports=supply.imports;
+        await product.save();
+
+        resolve(product);
       } catch (e) {
         reject(e);
       }
@@ -93,7 +132,6 @@ class SupplyAndImport {
   convertImportToSupply(importToConvert,supply) {
     return new Promise(async (resolve, reject) => {
       try {
-
         if(supply==undefined ||supply==null){
           console.log('convertImportToSupply new',importToConvert,importToConvert['DFC:description']);
           supply = {
@@ -106,12 +144,8 @@ class SupplyAndImport {
           supply.imports.push(importToConvert.id);
           await supply.save();
         }
-
-
-        // importToConvert.set('supply', inserted.id)
         importToConvert.supply=supply.id;
         await importToConvert.save();
-        // await importModel.model.update(importToConvert);
         resolve(supply);
       } catch (e) {
         reject(e);

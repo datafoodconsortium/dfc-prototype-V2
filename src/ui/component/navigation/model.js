@@ -6,10 +6,12 @@ import menu from '../menu/model.js';
 // import screen1 from '../catalog/model.js';
 // import screen3 from '../w2ui/model.js';
 import catalogImport from '../catalogImport/model.js';
-import catalogIntegration from '../catalogSupply/model.js';
+import catalogSupply from '../catalogSupply/model.js';
 import itemImport from '../itemImport/model.js';
+import itemSupply from '../itemSupply/model.js';
 import profil from '../profil/model.js';
 import importCatalog from '../importCatalog/model.js';
+
 
 export default class Navigation extends GenericElement {
   constructor() {
@@ -18,7 +20,7 @@ export default class Navigation extends GenericElement {
       channel: 'main',
       topic: 'screen',
       callback: (data) => {
-        console.log('screen', data);
+        // console.log('screen', data);
         this.loadComponent(data);
       }
     });
@@ -35,7 +37,7 @@ export default class Navigation extends GenericElement {
     }
     screen.appendChild(component);
 
-    this.propagatedStyle.forEach(style=>{
+    this.propagatedStyle.forEach(style => {
       component.appendChild(style.cloneNode(true));
     })
     return component;
@@ -43,7 +45,88 @@ export default class Navigation extends GenericElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this.activAuth();
     // this.loadComponent('home-wc');
+  }
+
+  async activAuth() {
+    let search = window.location.search.split('?')[1];
+    let urlToken = undefined;
+    if (search != undefined) {
+      let params = search.split('&').map(param => {
+        let terms = param.split('=')
+        return {
+          key: terms[0],
+          value: terms[1]
+        }
+      });
+      let urlToken = params.filter(r => r.key == 'token')[0];
+
+      if (urlToken != undefined) {
+        // console.log('urlToken', urlToken.value);
+        localStorage.setItem('token', urlToken.value);
+        let cleanurl=window.location.origin+window.location.pathname+window.location.hash;
+        window.location=cleanurl;
+        // console.log('location',window.location,window.origin.host+window.location.pathname+window.location.hash);
+        // this.shadowRoot.getElementById('appLink').click();
+      } else {
+
+      }
+    }
+    if (urlToken == undefined) {
+      let token = localStorage.getItem('token');
+
+      if (token != undefined && token != 'undefined') {
+
+        console.log('existing token');
+
+        // localStorage.removeItem('token');
+        // document.getElementById('oidcLink').click();
+      } else {
+
+
+      }
+
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", 'JTW' + ' ' + token);
+      // myHeaders.append("Referer",window.location)
+
+      var myInit = {
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors'
+      };
+
+      try {
+        let response = await fetch('/login/auth/user', myInit);
+
+        if (response.status == 200) {
+          let jsonResponse = await response.json();
+
+          console.log('response', jsonResponse);
+          this.publish({
+            channel: 'user',
+            topic: 'set',
+            data: jsonResponse
+          });
+          // document.getElementById('user').textContent = jsonResponse. preferred_username;
+
+        } else {
+          let text = await response.text();
+          // document.getElementById('err').textContent = text + ' redirect to OIDC provider in 1 second';
+          setTimeout(() => {
+            let oidcLink = this.shadowRoot.getElementById('oidcLink');
+            oidcLink.setAttribute('href', oidcLink.getAttribute('href-source') + '?app_referer=' + window.location.hash.substr(1));
+            oidcLink.click();
+          }, 1);
+
+        }
+      } catch (e) {
+        console.log('Request failed', e)
+      } finally {
+
+      }
+    }
   }
 
   disconnectedCallback() {
@@ -52,6 +135,27 @@ export default class Navigation extends GenericElement {
 
   attributeChangedCallback(attrName, oldVal, newVal) {
     super.attributeChangedCallback(attrName, oldVal, newVal);
+  }
+
+
+  removeParam(parameter) {
+    var url = document.location.href;
+    var urlparts = url.split('?');
+
+    if (urlparts.length >= 2) {
+      var urlBase = urlparts.shift();
+      var queryString = urlparts.join("?");
+
+      var prefix = encodeURIComponent(parameter) + '=';
+      var pars = queryString.split(/[&;]/g);
+      for (var i = pars.length; i-- > 0;)
+        if (pars[i].lastIndexOf(prefix, 0) !== -1)
+          pars.splice(i, 1);
+      url = urlBase + '?' + pars.join('&');
+      window.history.pushState('', document.title, url); // added this line to push the new url directly to url bar .
+
+    }
+    return url;
   }
 
 }

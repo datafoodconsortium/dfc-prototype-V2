@@ -29,6 +29,9 @@ export default class CatalogSupply extends GenericElement {
       autoLoad: false,
       idField: 'id',
       treeField: 'description',
+      onSelect: (rowData) => {
+        this.selectedSupply = rowData.raw
+      },
       columns: [
         [{
             field: 'description',
@@ -73,6 +76,10 @@ export default class CatalogSupply extends GenericElement {
     let injectedStyle3 = document.createElement('style');
     injectedStyle3.appendChild(document.createTextNode(easyuiCssColors.toString()));
     this.shadowRoot.appendChild(injectedStyle3);
+
+    this.shadowRoot.querySelector('#edit').addEventListener('click', e => {
+      this.edit();
+    })
   }
 
   disconnectedCallback() {
@@ -83,6 +90,14 @@ export default class CatalogSupply extends GenericElement {
     super.attributeChangedCallback(attrName, oldVal, newVal);
   }
 
+  edit(){
+    this.publish({
+      channel: 'main',
+      topic: 'navigate',
+      data : '/x-item-supply/'+encodeURIComponent(this.selectedSupply.id)
+    })
+  }
+
   setDataGrid(data){
     console.log('data received Tree', data);
     let counter = 0;
@@ -91,11 +106,13 @@ export default class CatalogSupply extends GenericElement {
       return {
         id: counter,
         description: d['DFC:description'],
+        raw: d,
         children: d.imports.map(c => {
           counter++;
           return {
             id:counter,
             source: c.source,
+            raw: d,
             description: c['DFC:description'],
             quantity: c['DFC:quantity'],
             unit: c['DFC:hasUnit']['@id'],

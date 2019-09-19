@@ -10,3 +10,16 @@ a:hover{
 .box{
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.30);
 }
+
+.panelContainer{
+  padding: 10px;
+}
+.field div{
+  padding: 5px;
+  border-bottom-style: solid;
+  border-width: 1px;
+}
+
+.field {
+  padding: 20px
+}

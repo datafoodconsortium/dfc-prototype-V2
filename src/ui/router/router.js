@@ -9,11 +9,10 @@ export default class Router extends GenericElement {
     var hash = '#'; // Defaults to: '#'
     this.router = new Navigo(root, useHash, hash);
 
-    this.router.on('/:screen', (params, query) => {
+    this.router.on('/:screen*', (params, query) => {
       if (params.screen == undefined) {
         this.firstRoute = true;
       }
-      console.log('ALLO', params);
       this.publish({
         channel: 'main',
         topic: 'screen',

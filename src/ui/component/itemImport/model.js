@@ -107,7 +107,7 @@ export default class ItemImport extends GenericElement {
     injectedStyle3.appendChild(document.createTextNode(easyuiCssColors.toString()));
     this.shadowRoot.appendChild(injectedStyle3);
 
-    let regex = /\#\/x-item-import\?.*id=(.+)\/?/ig;
+    let regex = /\#\/x-item-import\/(.+)\/?/ig;
     // console.log('document.location.hash',document.location.hash);
     let regExec = regex.exec(document.location.hash);
     let id;
