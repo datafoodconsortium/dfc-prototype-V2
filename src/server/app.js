@@ -14,8 +14,10 @@ let url = env.CONFIG_URL;
 
 // const mongo_client = require('./mongo_client');
 // const mongoose = require('mongoose');
-
-url = "https://simonlouvet.github.io/config-private/DFC-Proto/config.json"
+// console.log('ENV',env);
+if(url==undefined || url==''){
+  url = "https://simonlouvet.github.io/config-private/DFC-Proto/config.json"
+}
 
 app.use(cors())
 app.use(bodyParser.json({
