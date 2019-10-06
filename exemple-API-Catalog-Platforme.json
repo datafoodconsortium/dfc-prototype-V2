@@ -1,6 +1,6 @@
 {
   "@context": {
-    "DFC-business": "https://frama.link/DFC-business-ontology",
+    "DFC": "http://datafoodconsortium.org/ontologies/DFC_FullModel.owl#",
     "@base": "http://maPlateforme"
   },
   "DFC:Entreprise":{
