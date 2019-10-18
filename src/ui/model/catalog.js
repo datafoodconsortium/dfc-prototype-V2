@@ -25,7 +25,7 @@ export default class Catalog extends GenericElement {
       channel: 'supply',
       topic: 'unlink',
       callback: (data) => {
-        this.unlinkSupply(data.supply,data.import);
+        this.unlinkSupply(data.supply, data.import);
       }
     });
 
@@ -41,7 +41,7 @@ export default class Catalog extends GenericElement {
       channel: 'import',
       topic: 'convert',
       callback: (data) => {
-        this.convertImportToSupply(data.importId,data.supplyId);
+        this.convertImportToSupply(data.importId, data.supplyId);
       }
     });
 
@@ -82,22 +82,6 @@ export default class Catalog extends GenericElement {
         this.cleanAll();
       }
     });
-
-    this.subscribe({
-      channel: 'user',
-      topic: 'set',
-      callback: (data) => {
-        this.setUser(data);
-      }
-    });
-
-    this.subscribe({
-      channel: 'user',
-      topic: 'get',
-      callback: (data) => {
-        this.getUser();
-      }
-    });
   }
 
   cleanAll(source) {
@@ -121,20 +105,22 @@ export default class Catalog extends GenericElement {
     this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
       alert(source + ' bien importé')
-    })
+    }).catch(e=>{
+      alert(e)
+    });
   }
 
-  convertImportToSupply(importId,supplyId) {
+  convertImportToSupply(importId, supplyId) {
     let url = `/data/core/import/${importId}/convert/${supplyId==undefined?'':supplyId}`;
     let option = {
       method: 'POST'
     };
     this.util.ajaxCall(url, option).then(data => {
-      console.log('import converti',data);
+      console.log('import converti', data);
       this.publish({
         channel: 'import',
         topic: 'convert.done',
-        data: data
+        data: data.body
       });
     })
   }
@@ -151,7 +137,7 @@ export default class Catalog extends GenericElement {
     this.catalogs = [];
     this.catalogsTree = [];
     this.util.ajaxCall(url).then(data => {
-      let newRecords = data.map(record => {
+      let newRecords = data.body.map(record => {
         return {
           '@id': record['@id'],
           'source': record['source'],
@@ -199,8 +185,8 @@ export default class Catalog extends GenericElement {
   loadOneImport(id) {
     let url = `/data/core/import/${id}`;
     this.util.ajaxCall(url).then(data => {
-      this.selectedImport=data;
-      console.log('loadOneImport',this.selectedImport);
+      this.selectedImport = data.body;
+      console.log('loadOneImport', this.selectedImport);
       this.publish({
         channel: 'import',
         topic: 'changeOne',
@@ -216,7 +202,7 @@ export default class Catalog extends GenericElement {
     this.catalogs = [];
     this.catalogsTree = [];
     this.util.ajaxCall(url).then(data => {
-      let newRecords = data.map(record => {
+      let newRecords = data.body.map(record => {
         return {
           'id': record['_id'],
           'imports': record['imports'],
@@ -244,7 +230,7 @@ export default class Catalog extends GenericElement {
   loadOneSupply(id) {
     let url = `/data/core/supply/${id}`;
     this.util.ajaxCall(url).then(data => {
-      this.selectedSupply=data;
+      this.selectedSupply = data.body;
       // console.log('loadOneSupply',this.selectedSupply);
       this.publish({
         channel: 'supply',
@@ -254,18 +240,18 @@ export default class Catalog extends GenericElement {
     })
   }
 
-  unlinkSupply(supply,importItem){
+  unlinkSupply(supply, importItem) {
     // console.log('supply',supply);
     // console.log('import',importItem);
-    supply.imports=supply.imports.filter(i=>i._id!=importItem._id);
-    console.log('supply after',supply);
+    supply.imports = supply.imports.filter(i => i._id != importItem._id);
+    console.log('supply after', supply);
     let url = '/data/core/supply/';
     let option = {
       method: 'POST',
-      body:JSON.stringify(supply)
+      body: JSON.stringify(supply)
     };
     this.util.ajaxCall(url, option).then(data => {
-      this.selectedSupply=data;
+      this.selectedSupply = data.body;
       // console.log('loadOneSupply',this.selectedSupply);
       this.publish({
         channel: 'supply',
@@ -275,14 +261,14 @@ export default class Catalog extends GenericElement {
     })
   }
 
-  updateSupply(supply){
+  updateSupply(supply) {
     let url = '/data/core/supply/';
     let option = {
       method: 'POST',
-      body:JSON.stringify(supply)
+      body: JSON.stringify(supply)
     };
     this.util.ajaxCall(url, option).then(data => {
-      this.selectedSupply=data;
+      this.selectedSupply = data.body;
       // console.log('loadOneSupply',this.selectedSupply);
       this.publish({
         channel: 'supply',
@@ -291,24 +277,6 @@ export default class Catalog extends GenericElement {
       });
     })
   }
-
-  setUser(data){
-    this.user=data;
-    this.publish({
-      channel: 'user',
-      topic: 'changeOne',
-      data: this.user
-    });
-  }
-
-  getUser(data){
-    this.publish({
-      channel: 'user',
-      topic: 'changeOne',
-      data: this.user
-    });
-  }
-
 
 }
 window.customElements.define('x-service-catalog', Catalog);

@@ -23,3 +23,7 @@ a:hover{
 .field {
   padding: 20px
 }
+
+.hide{
+  display:none
+}

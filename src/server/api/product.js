@@ -3,6 +3,7 @@
 // const importModel = require('../ORM/importModel');
 const request = require('request');
 const SupplyAndImport = require('./../service/supplyAndImport.js');
+const Entreprise = require('./../service/entreprise.js');
 
 module.exports = function (router) {
   // this.config = require('./../../configuration.js');
@@ -21,8 +22,13 @@ module.exports = function (router) {
     let idImport= req.params.idImport;
     let idSupply= req.params.idSupply;
     console.log(idImport,idSupply);
-    let out= await supplyAndImport.convertImportIdToSupplyId(idImport,idSupply);
-    res.json(out)
+    if(req.user['DFC:Entreprise']==undefined){
+      next(new Error('this user don t have entreprise defined'))
+    }else {
+      let out= await supplyAndImport.convertImportIdToSupplyId(idImport,idSupply,req.user['DFC:Entreprise']);
+      res.json(out)
+    }
+
   })
 
   router.get('/import/:id(*)', async (req, res, next)=>{
@@ -38,7 +44,7 @@ module.exports = function (router) {
   router.post('/supply', async (req, res, next)=>{
     try {
       let out= await supplyAndImport.updateOneSupply(req.body);
-      res.json(out)
+      res.json(out);
     } catch (e) {
       next(e)
     }
@@ -47,12 +53,18 @@ module.exports = function (router) {
   router.get('/supply/:id', async (req, res, next)=>{
     console.log('supply',req.params.id);
     let out= await supplyAndImport.getOneSupply(req.params.id);
-    res.json(out)
+    res.json(out);
   })
 
   router.post('/import/importSource', async (req, res, next)=>{
     let source = decodeURI(req.query.source);
-    let out= await supplyAndImport.importSource(source);
-    res.json(out)
+    if(req.user['DFC:Entreprise']==undefined){
+      next(new Error('this user don t have entreprise defined'))
+    }else {
+      let out= await supplyAndImport.importSource(source,req.user['DFC:Entreprise']);
+      res.json(out);
+
+    }
   })
+
 }

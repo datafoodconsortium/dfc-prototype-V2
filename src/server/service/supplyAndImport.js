@@ -95,7 +95,9 @@ class SupplyAndImport {
           i.supply=undefined;
           await i.save();
         })
-        product['DFC:description']=supply['DFC:description']
+        product['DFC:description']=supply['DFC:description'];
+        product['DFC:quantity']= supply['DFC:quantity'];
+        product['DFC:hasUnit']= supply['DFC:hasUnit'];
         product.imports=supply.imports;
         await product.save();
 
@@ -106,11 +108,11 @@ class SupplyAndImport {
     })
   }
 
-  convertAllImportToSupply(importsToConvert) {
+  convertAllImportToSupply(importsToConvert,entreprise) {
     return new Promise(async (resolve, reject) => {
       try {
         let inserted = importsToConvert.map(async i => {
-          await this.convertImportToSupply(i);
+          await this.convertImportToSupply(i,undefined,entreprise);
         })
         resolve(inserted)
       } catch (e) {
@@ -119,24 +121,27 @@ class SupplyAndImport {
     })
   }
 
-  convertImportIdToSupplyId(importId,supplyId){
+  convertImportIdToSupplyId(importId,supplyId,entreprise){
     return new Promise(async (resolve, reject) => {
       let importItem = await importModel.model.findOne({'@id':importId});
       let supplyItem = await supplyModel.model.findById(supplyId);
       console.log('convertImportIdToSupplyId',importItem,supplyItem);
-      let newSupply = await this.convertImportToSupply(importItem,supplyItem);
+      let newSupply = await this.convertImportToSupply(importItem,supplyItem,entreprise);
       resolve(newSupply);
     })
   }
 
-  convertImportToSupply(importToConvert,supply) {
+  convertImportToSupply(importToConvert,supply,entreprise) {
     return new Promise(async (resolve, reject) => {
       try {
         if(supply==undefined ||supply==null){
           console.log('convertImportToSupply new',importToConvert,importToConvert['DFC:description']);
           supply = {
             imports: [importToConvert.id],
-            'DFC:description': importToConvert['DFC:description']
+            'DFC:description': importToConvert['DFC:description'],
+            'DFC:quantity': importToConvert['DFC:quantity'],
+            'DFC:hasUnit': importToConvert['DFC:hasUnit'],
+            'DFC:suppliedBy':entreprise._id
           };
           console.log('convertImportToSupply supply',supply);
           supply = await supplyModel.model.create(supply);
@@ -153,7 +158,7 @@ class SupplyAndImport {
     })
   }
 
-  importSource(source) {
+  importSource(source,entreprise) {
     return new Promise(async (resolve, reject) => {
       try {
         // console.log('source', source, config.sources);
@@ -177,7 +182,7 @@ class SupplyAndImport {
             let exinsting = await supplyModel.model.find({});
             // console.log("exinsting", exinsting);
             if (exinsting.length == 0) {
-              this.convertAllImportToSupply(inserted);
+              this.convertAllImportToSupply(inserted, entreprise);
             }
 
             resolve(inserted)

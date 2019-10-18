@@ -40,7 +40,11 @@ request(url, {
       } else {
         const config = require("../../configuration.js")
         const middlware_express_oidc = require('./auth/middlware-express-oidc.js');
-        const productService = require('./api/product.js');
+        const productAPI = require('./api/product.js');
+        const entrepriseAPI = require('./api/entreprise.js');
+        const entrepriseUnsafe = require('./api/entrepriseUnsafe.js');
+        const redirectAPI = require('./api/redirectAPI.js');
+        const userAPI = require('./api/user.js');
         console.log('config',config);
         app.use(session({
           secret: config.express.session_secret,
@@ -48,12 +52,17 @@ request(url, {
         })); //session secret
         safeRouter.use(middlware_express_oidc);
         app.use('/login/', unsafeRouter);
+        app.use('/data/core', unsafeRouter);
         app.use('/data/core', safeRouter);
         app.use(passport.initialize());
         app.use(passport.session());
         let addOidcLesCommunsPassportToApp = require('./auth/passport-oidc.js');
         addOidcLesCommunsPassportToApp(unsafeRouter);
-        productService(safeRouter)
+        entrepriseUnsafe(unsafeRouter);
+        redirectAPI(unsafeRouter);
+        productAPI(safeRouter);
+        userAPI(safeRouter);
+        entrepriseAPI(safeRouter);
         app.get('/', function(req, res, next) {
           res.redirect('/ui/')
         })
@@ -63,6 +72,17 @@ request(url, {
         const port = process.env.APP_PORT || 8080
         app.listen(port, function(err) {
           console.log('serveur started at port', port);
+        })
+        app.use((_err, req, res, next) => {
+          if (_err) {
+            console.log('error',_err);
+            if (res.statusCode==undefined){
+                res.status(500);
+            }
+            res.send({
+              message: _err.message
+            })
+          }
         })
       }
     })

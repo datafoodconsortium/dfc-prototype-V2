@@ -11,6 +11,8 @@ import itemImport from '../itemImport/model.js';
 import itemSupply from '../itemSupply/model.js';
 import profil from '../profil/model.js';
 import importCatalog from '../importCatalog/model.js';
+import oidc_test from '../OIDC-test/model.js';
+import ldp_test from '../LDP-test/model.js';
 
 
 export default class Navigation extends GenericElement {
@@ -98,14 +100,14 @@ export default class Navigation extends GenericElement {
       };
 
       try {
-        let response = await fetch('/login/auth/user', myInit);
+        let response = await fetch('/login/auth/me', myInit);
 
         if (response.status == 200) {
           let jsonResponse = await response.json();
 
           console.log('response', jsonResponse);
           this.publish({
-            channel: 'user',
+            channel: 'profil',
             topic: 'set',
             data: jsonResponse
           });

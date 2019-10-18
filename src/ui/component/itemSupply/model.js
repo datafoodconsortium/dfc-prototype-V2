@@ -131,9 +131,11 @@ export default class ItemSupply extends GenericElement {
   }
 
   setData(data) {
-    // console.log('setData',data);
+    console.log('setData',data);
     this.item = data
     this.elements.description.textContent = data['DFC:description'];
+    this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
+    this.elements.quantity.textContent = data['DFC:quantity'];
     this.setDataGrid(data.imports)
     // this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     // this.elements.quantity.textContent = data['DFC:quantity'];
@@ -154,6 +156,8 @@ export default class ItemSupply extends GenericElement {
   referer(){
       if(this.selectedImport!=undefined){
         this.item['DFC:description']=this.selectedImport['DFC:description'];
+        this.item['DFC:quantity']=this.selectedImport['DFC:quantity'];
+        this.item['DFC:hasUnit']=this.selectedImport['DFC:hasUnit'];
       }
 
       this.publish({

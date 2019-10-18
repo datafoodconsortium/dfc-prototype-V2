@@ -6,13 +6,14 @@ let clientGlobal = undefined;
 const fs = require('fs');
 const jose = require('node-jose');
 const middlware_express_oidc = require('./middlware-express-oidc.js');
+const request = require('request');
 
 let addOidcLesCommunsPassportToApp = async function(router) {
-  let config=require("../../../configuration.js")
+  let config = require("../../../configuration.js")
   // console.log(config);
 
   let lesCommunsIssuer = await Issuer.discover(config.OIDC.lesCommuns.issuer);
-  // console.log('Les Communs Discovered issuer %s', JSON.stringify(lesCommunsIssuer));
+  //console.log('Les Communs Discovered issuer %s', JSON.stringify(lesCommunsIssuer));
   const client = new lesCommunsIssuer.Client({
     client_id: config.OIDC.lesCommuns.client_id, // Data Food Consoritum in Hex
     client_secret: config.OIDC.lesCommuns.client_secret,
@@ -57,18 +58,19 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     next()
   });
   router.get('/auth', async function(req, res, next) {
-    let referer=req.headers.referer;
-    req.session.referer=referer;
-    if(req.query.app_referer!=undefined && req.query.app_referer!='' && req.query.app_referer!=null){
+    let referer = req.headers.referer;
+    req.session.referer = referer;
+    if (req.query.app_referer != undefined && req.query.app_referer != '' && req.query.app_referer != null) {
       // console.log('req.query.app_referer',req.query.app_referer);
       // referer=referer+'#'+req.query.app_referer;
-      req.session.app_referer=req.query.app_referer
+      req.session.app_referer = req.query.app_referer
     }
 
 
-    console.log('auth headers',req.session.referer,req.session.app_referer);
+    console.log('auth headers', req.session.referer, req.session.app_referer);
     next()
   });
+
   router.get('/auth', passport.authenticate('oidc', {
     session: false
   }));
@@ -80,18 +82,36 @@ let addOidcLesCommunsPassportToApp = async function(router) {
 
     // console.log('/auth/cb',res,req);
     // console.log('req.session.referer',req.session.referer);
-    let redirect_url=req.session.referer+'?token=' + res.req.user.accesstoken;
-    if(req.session.app_referer!=undefined){
-      redirect_url=redirect_url+'#'+req.session.app_referer
+    let redirect_url = req.session.referer + '?token=' + res.req.user.accesstoken;
+    if (req.session.app_referer != undefined) {
+      redirect_url = redirect_url + '#' + req.session.app_referer
     }
-    console.log('callback referer',req.session.referer,req.session.app_referer)
+    console.log('callback referer', req.session.referer, req.session.app_referer)
     res.redirect(redirect_url);
   });
 
 
-  router.get('/auth/user',middlware_express_oidc,async function(req, res, next){
+  router.get('/auth/me', middlware_express_oidc, async function(req, res, next) {
+    let config = require("../../../configuration.js");
+    // let url =config.OIDC.lesCommuns.issuer+'users/'+req.oidcPayload.jti;
+    // let url ='https://login.lescommuns.org/auth/admin/realms/master/users/b5d90393-b94f-43b6-9287-9e9dfd09a43f'
+    // console.log(url);
+    // request(url, {
+    //   json: true,
+    //   auth: {
+    //     bearer: req.accessToken
+    //   }
+    // }, (err, result) => {
+    //   console.log('ALLO');
+    //   console.log(err);
+    //   console.log(result.statusCode);
+    // })
+
     // console.log('req.oidcPayload',req.oidcPayload);
-    res.json(req.oidcPayload);
+    res.json({
+      oidcPayload: req.oidcPayload,
+      user: req.user
+    });
   });
 }
 module.exports = addOidcLesCommunsPassportToApp;

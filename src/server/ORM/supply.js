@@ -14,6 +14,27 @@ class SupplyModel {
         type: String,
         //required: true
       },
+      "DFC:suppliedBy":{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "entreprise"
+      },
+      "DFC:description": {
+        type: String,
+        //required: true
+      },
+      "DFC:quantity": {
+        type: Number,
+        //required: true
+      },
+      "DFC:hasUnit": {
+        type: mongoose.Schema.Types.Mixed,
+        //required: true
+      },
+      "@type": {
+        type: String,
+        default: "DFC:SuppliedProduct",
+        required: true
+      }
     }, {
       strict: false
     }))

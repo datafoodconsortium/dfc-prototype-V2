@@ -14,12 +14,25 @@ class ImportModel {
         type: String,
         //required: true
       },
+      "DFC:quantity": {
+        type: Number,
+        //required: true
+      },
+      "DFC:hasUnit": {
+        type: mongoose.Schema.Types.Mixed,
+        //required: true
+      },
+      "@type": {
+        type: String,
+        default: "DFC:SuppliedProduct",
+        required: true
+      }
     }, {
       strict: false
     }))
   }
 
-  get model(){
+  get model() {
     return this._model;
   }
 }
