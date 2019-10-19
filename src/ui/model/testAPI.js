@@ -18,7 +18,7 @@ export default class TestAPI extends GenericElement {
   }
 
   testApiHeader(url) {
-    url='http://localhost:8080/data/core/redirectAPI?url='+url;
+    url=window.location.origin +'/data/core/redirectAPI?url='+url;
     this.util.ajaxCall(url).then(data => {
       console.log('ajaxCall callback',data);
       this.publish({
