@@ -58,10 +58,11 @@ module.exports = function (router) {
 
   router.post('/import/importSource', async (req, res, next)=>{
     let source = decodeURI(req.query.source);
+    // console.log('req.user',req.user);
     if(req.user['DFC:Entreprise']==undefined){
       next(new Error('this user don t have entreprise defined'))
     }else {
-      let out= await supplyAndImport.importSource(source,req.user['DFC:Entreprise']);
+      let out= await supplyAndImport.importSource(source,req.user);
       res.json(out);
 
     }
