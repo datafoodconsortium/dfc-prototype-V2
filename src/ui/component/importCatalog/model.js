@@ -19,15 +19,21 @@ export default class ImportCatalog extends GenericElement {
       this.publish({
         channel: 'source',
         topic: 'importOne',
-        data:{source:optionSelected.value}
+        data: {
+          source: optionSelected.value
+        }
       });
     });
 
     this.shadowRoot.getElementById('clean-button').addEventListener('click', e => {
-      this.publish({
-        channel: 'source',
-        topic: 'clean',
-      });
+      let cleandecision = confirm('êtes vous sur de vouloir supprimer le catalogue lié à cet utilisateur');
+      // if (cleandecision == true) {
+        this.publish({
+          channel: 'source',
+          topic: 'clean',
+        });
+      // }
+
     });
 
     console.log('connectedCallback');

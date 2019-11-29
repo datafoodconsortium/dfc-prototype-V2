@@ -91,7 +91,10 @@ export default class Catalog extends GenericElement {
     };
     this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
-      alert('catalogue vidé')
+      this.publish({
+        channel: 'main',
+        topic: 'navigate',
+      });
     })
   }
 

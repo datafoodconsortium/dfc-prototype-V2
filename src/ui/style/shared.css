@@ -2,6 +2,22 @@
 a{
   text-decoration: none;
   color: white;
+  border-style: solid;
+  border-color: black;
+}
+
+button{
+  text-transform: uppercase;
+  font-size: 1.2em;
+  background-color: var(--color-orange);
+  color: white;
+  border-style: solid;
+  border-color: black;
+  margin: 2px;
+}
+
+button:hover{
+  cursor: pointer;
 }
 
 a:hover{
@@ -22,9 +38,13 @@ a:hover{
 }
 
 .field {
-  padding: 20px
+  padding: 20px;
 }
 
 .hide{
-  display:none
+  display:none;
+}
+
+#main{
+  font-family: Arial, Helvetica, sans-serif;
 }
