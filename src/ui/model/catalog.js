@@ -94,6 +94,7 @@ export default class Catalog extends GenericElement {
       this.publish({
         channel: 'main',
         topic: 'navigate',
+        data : '/x-catalog-supply'
       });
     })
   }

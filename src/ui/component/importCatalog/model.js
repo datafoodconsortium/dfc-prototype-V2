@@ -27,12 +27,13 @@ export default class ImportCatalog extends GenericElement {
 
     this.shadowRoot.getElementById('clean-button').addEventListener('click', e => {
       let cleandecision = confirm('êtes vous sur de vouloir supprimer le catalogue lié à cet utilisateur');
-      // if (cleandecision == true) {
+      console.log(cleandecision);
+      if (cleandecision == true) {
         this.publish({
           channel: 'source',
           topic: 'clean',
         });
-      // }
+      }
 
     });
 
