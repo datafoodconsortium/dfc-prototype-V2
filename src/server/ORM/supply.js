@@ -34,6 +34,10 @@ class SupplyModel {
         type: String,
         default: "DFC:SuppliedProduct",
         required: true
+      },
+      "@id": {
+        type: String,
+        required: true
       }
     }, {
       strict: false

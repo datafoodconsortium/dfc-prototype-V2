@@ -90,7 +90,7 @@ export default class Navigation extends GenericElement {
       }
 
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", 'JTW' + ' ' + token);
+      myHeaders.append("Authorization", 'JWT' + ' ' + token);
       // myHeaders.append("Referer",window.location)
 
       var myInit = {

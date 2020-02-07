@@ -5,11 +5,12 @@ const EntrepriseService=require("../service/entreprise.js")
 const UserService=require("../service/user.js")
 
 async function middlware_express_oidc (req,res,next) {
-  console.log('req.headers',req.headers.authorization);
+  // console.log('req.headers',req.headers.authorization);
   if(req.headers.authorization==undefined){
     res.status(401)
     next(new Error('Missing Bearer Token'));
   }else {
+    console.log(req.headers.authorization);
     var token = req.headers.authorization.split(' ')[1];
     if (token==null || token==undefined || token=='null') {
       res.status(401)
@@ -21,6 +22,10 @@ async function middlware_express_oidc (req,res,next) {
       var signature = components[2];
       var decodedSignature = base64url.decode(components[2])
       // console.log('payload',payload);
+      // console.log('payload', payload);
+      // console.log('resource_access', payload.resource_access);
+      // console.log('signature', signature);
+      // console.log('decoded signature', decodedSignature);
       let entrepriseService = new EntrepriseService();
       let userService = new UserService();
       let user = await userService.connectUser(payload.preferred_username,token);

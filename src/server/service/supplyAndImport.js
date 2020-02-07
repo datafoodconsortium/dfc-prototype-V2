@@ -3,6 +3,7 @@ const importModel = require('../ORM/import');
 const supplyModel = require('../ORM/supply');
 const request = require('request');
 const config = require('./../../../configuration.js');
+const fetch = require('node-fetch');
 
 class SupplyAndImport {
   constructor() {}
@@ -77,7 +78,6 @@ class SupplyAndImport {
     return new Promise(async (resolve, reject) => {
       try {
         let product = await supplyModel.model.findById(id).populate('imports');
-        // console.log('products', products);
         resolve(product);
       } catch (e) {
         reject(e);
@@ -89,7 +89,7 @@ class SupplyAndImport {
     return new Promise(async (resolve, reject) => {
       try {
         let product = await supplyModel.model.findById(supply._id).populate('imports');
-        console.log(product);
+        // console.log(product);
         let newImports = supply.imports.filter(i => product.imports.filter(i2 => i2._id == i._id).length == 0);
         newImports.forEach(async i => {
           i.supply = product._id;
@@ -133,7 +133,7 @@ class SupplyAndImport {
         '@id': importId
       });
       let supplyItem = await supplyModel.model.findById(supplyId);
-      console.log('convertImportIdToSupplyId', importItem, supplyItem);
+      // console.log('convertImportIdToSupplyId', importItem, supplyItem);
       let newSupply = await this.convertImportToSupply(importItem, supplyItem, entreprise);
       resolve(newSupply);
     })
@@ -143,16 +143,73 @@ class SupplyAndImport {
     return new Promise(async (resolve, reject) => {
       try {
         if (supply == undefined || supply == null) {
-          console.log('convertImportToSupply new', importToConvert, importToConvert['DFC:description']);
+          let offProduct={};
+          let imports =[];
+          let id='';
+
+          if(importToConvert.source.includes('Open Food Fact')){
+              offProduct=importToConvert;
+              Object.assign(offProduct,importToConvert);
+              console.log('--1',offProduct);
+              id=offProduct['@id'];
+              console.log('--2',offProduct);
+              imports.push(offProduct.id);
+              // console.log('OFF Product',offProduct);
+
+          }else{
+            console.log('convertImportToSupply new', importToConvert, importToConvert['DFC:description']);
+            let OFFProduct = {
+              "@context": {
+                "DFC": "http://datafoodconsortium.org/ontologies/DFC_FullModel.owl#",
+                "@base": "https://grappe.io/data/api/"
+              },
+              "@type": "DFC:Product",
+              "DFC:description": importToConvert['DFC:description'],
+              "DFC:hasUnit": importToConvert['DFC:hasUnit'],
+              "DFC:quantity": importToConvert['DFC:quantity'],
+              "DFC:suppliedBy": "TestDFC"
+            }
+
+            let responseCreate = await fetch('http://grappe.io/data/api/5df3b0f6d5d03600298cff6e-OFF-Create-Product', {
+              method: 'POST',
+              body: JSON.stringify(OFFProduct),
+              headers: { 'Content-Type': 'application/json' },
+            })
+
+            let newOffproductLocation = await responseCreate.json();
+
+            let responseCreatedObject = await fetch(newOffproductLocation.location, {
+              method: 'GET',
+            })
+            offProduct=await responseCreatedObject.json();
+
+            id=offProduct['@id'];
+
+            let context = {};
+            Object.assign(context,offProduct['@context']);
+            if(context['@base']!=undefined){
+                offProduct['@id']=context['@base'].concat(offProduct['@id'])
+            }
+            offProduct.source='Open Food Fact';
+
+            offProduct['@context']=undefined;
+            offProduct = await importModel.model.create(offProduct);
+            imports.push(offProduct.id);
+            imports.push(importToConvert.id);
+          }
+
+          // console.log('offProduct',offProduct);
+          const regex = /.*\/(.*)/gm;
+          id=`http://datafoodconsortium.org/${regex.exec(id)[1]}`;
           supply = {
-            imports: [importToConvert.id],
-            'DFC:description': importToConvert['DFC:description'],
-            'DFC:quantity': importToConvert['DFC:quantity'],
-            'DFC:hasUnit': importToConvert['DFC:hasUnit'],
-            'DFC:suppliedBy': entreprise._id
+            imports: imports,
+            '@id':id,
+            "DFC:description": importToConvert['DFC:description'],
+            "DFC:hasUnit": importToConvert['DFC:hasUnit'],
+            "DFC:quantity": importToConvert['DFC:quantity'],
           };
-          console.log('convertImportToSupply supply', supply);
           supply = await supplyModel.model.create(supply);
+          console.log('supply created', supply);
         } else {
           supply.imports.push(importToConvert.id);
           await supply.save();
@@ -171,13 +228,13 @@ class SupplyAndImport {
       try {
         let entreprise = user['DFC:Entreprise'];
         // console.log('source', source, config.sources);
-        let sourceObject = config.sources.filter(so => so.name == source)[0];
-        console.log('url', source, sourceObject);
+        let sourceObject = config.sources.filter(so => source.includes(so.url))[0];
+        // console.log('url', source, sourceObject);
         request({
-          url: sourceObject.url,
+          url: source,
           json: true,
           headers: {
-            'authorization': 'JTW '+user.accessToken
+            'authorization': 'JWT ' + user.accessToken
           }
         }, async (err, result, body) => {
           try {
@@ -202,7 +259,7 @@ class SupplyAndImport {
             let exinsting = await supplyModel.model.find({});
             // console.log("exinsting", exinsting);
             if (exinsting.length == 0) {
-              this.convertAllImportToSupply(inserted, entreprise);
+              // this.convertAllImportToSupply(inserted, entreprise);
             }
 
             resolve(inserted)

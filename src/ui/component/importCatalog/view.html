@@ -1,11 +1,16 @@
-<div class="panelContainer" style="flex:1 containerV">
+<div class="panelContainer containerV" style="flex:1" >
 
   <h1>Import</h1>
   <p>Veuillez sélectionner une plateforme ci-dessous et cliquer sur "importer".</p>
-  <div>
-    <select id="source-select">
-      <option value="">--Veuiller choisir une source--</option>
-    </select>
+  <div class="containerV">
+    <div class="field">
+      <select class="value" id="source-select">
+        <option value="">--Veuiller choisir une source--</option>
+      </select>
+    </div>
+
+    <div id="options">
+    </div>
     <button id="import-button">importer</button>
   </div>
   <h1>Suppression des produits</h1>
@@ -14,3 +19,9 @@
     <button id="clean-button">Supprimer tous les produits</button>
   </div>
 </div>
+<style>
+  span {
+    padding: 5px;
+    font-size : small;
+  }
+</style>

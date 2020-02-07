@@ -45,6 +45,7 @@ request(url, {
         const entrepriseUnsafe = require('./api/entrepriseUnsafe.js');
         const redirectAPI = require('./api/redirectAPI.js');
         const userAPI = require('./api/user.js');
+        const configAPI = require('./api/config.js');
         console.log('config',config);
         app.use(session({
           secret: config.express.session_secret,
@@ -59,9 +60,10 @@ request(url, {
         let addOidcLesCommunsPassportToApp = require('./auth/passport-oidc.js');
         addOidcLesCommunsPassportToApp(unsafeRouter);
         entrepriseUnsafe(unsafeRouter);
-        redirectAPI(unsafeRouter);
+        redirectAPI(safeRouter);
         productAPI(safeRouter);
         userAPI(safeRouter);
+        configAPI(unsafeRouter,config);
         entrepriseAPI(safeRouter);
         app.get('/', function(req, res, next) {
           res.redirect('/ui/')

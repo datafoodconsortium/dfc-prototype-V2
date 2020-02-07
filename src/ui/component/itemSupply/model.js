@@ -15,6 +15,7 @@ export default class ItemSupply extends GenericElement {
       unit: this.shadowRoot.querySelector('[name="unit"]'),
       quantity: this.shadowRoot.querySelector('[name="quantity"]'),
       source: this.shadowRoot.querySelector('[name="source"]'),
+      id: this.shadowRoot.querySelector('[name="id"]'),
     };
 
     this.subscribe({
@@ -136,6 +137,7 @@ export default class ItemSupply extends GenericElement {
     this.elements.description.textContent = data['DFC:description'];
     this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     this.elements.quantity.textContent = data['DFC:quantity'];
+    this.elements.id.textContent = data['@id'];
     this.setDataGrid(data.imports)
     // this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     // this.elements.quantity.textContent = data['DFC:quantity'];

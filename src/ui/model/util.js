@@ -1,4 +1,9 @@
 export default class Util {
+  async getConfig(){
+    let response = await fetch('/data/core/config');
+    let out = await response.json();
+    return out ;
+  }
   ajaxCall(url, option) {
     option = option || {};
     // console.log('ajaxCall', url, option);
@@ -7,7 +12,7 @@ export default class Util {
 
       if (token != undefined && token != 'undefined') {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", 'JTW' + ' ' + token);
+        myHeaders.append("Authorization", 'JWT' + ' ' + token);
         myHeaders.append("Content-Type", 'application/json');
         var myInit = {
           headers: myHeaders,

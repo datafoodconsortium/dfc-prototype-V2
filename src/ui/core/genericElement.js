@@ -46,7 +46,7 @@ export default class GenericElement extends HTMLElement {
       console.log('innerHTML',this.innerHTML);
     }
 
-    console.log('OK');
+    // console.log('OK');
   }
 
   appendPropagatedStyle(injectedStyle){

@@ -1,6 +1,6 @@
 import Navigo from 'navigo';
 import GenericElement from '../core/genericElement.js';
-import config from '../../config/config.json';
+// import config from '../../config/config.json';
 import Util from './util.js'
 export default class Catalog extends GenericElement {
   constructor() {
@@ -71,7 +71,7 @@ export default class Catalog extends GenericElement {
       channel: 'source',
       topic: 'importOne',
       callback: (data) => {
-        this.importOne(data.source);
+        this.importOne(data.source,data.name);
       }
     });
 
@@ -99,7 +99,7 @@ export default class Catalog extends GenericElement {
     })
   }
 
-  importOne(source) {
+  importOne(source,name) {
     // let sourceObject = config.sources.filter(so => so.name == source)[0];
     // console.log('importOne',sourceObject);
     let url = '/data/core/import/importSource?source=' + source;
@@ -108,7 +108,7 @@ export default class Catalog extends GenericElement {
     };
     this.util.ajaxCall(url, option).then(data => {
       console.log('resolve ajaxCall', data);
-      alert(source + ' bien importé')
+      alert(name + ' bien importé')
     }).catch(e=>{
       alert(e)
     });
@@ -129,11 +129,12 @@ export default class Catalog extends GenericElement {
     })
   }
 
-  getSources() {
+  async getSources() {
+    let config = await this.util.getConfig();
     this.publish({
       channel: 'source',
       topic: 'changeAll',
-      data: config.sources
+      data: config.sources,
     });
   }
   loadAllImport() {

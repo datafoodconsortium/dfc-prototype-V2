@@ -15,6 +15,7 @@ export default class ItemImport extends GenericElement {
       unit: this.shadowRoot.querySelector('[name="unit"]'),
       quantity: this.shadowRoot.querySelector('[name="quantity"]'),
       source: this.shadowRoot.querySelector('[name="source"]'),
+      descriptionSearch: this.shadowRoot.querySelector('[name="descriptionSearch"]'),
     };
 
     this.subscribe({
@@ -30,6 +31,7 @@ export default class ItemImport extends GenericElement {
       topic: 'changeAll',
       callback: (data) => {
         this.setDataGrid(data)
+        this.rawSupplies=data;
       }
     });
     this.subscribe({
@@ -53,7 +55,9 @@ export default class ItemImport extends GenericElement {
     this.shadowRoot.querySelector('#linkEmpty').addEventListener('click', e => {
       this.consolidate(true);
     })
-
+    this.shadowRoot.querySelector('#filter').addEventListener('click', e => {
+      this.filter(this.elements.descriptionSearch.value);
+    })
 
     this.gridDomTree = $(this.shadowRoot.querySelector("#treeGrid"));
 
@@ -131,6 +135,20 @@ export default class ItemImport extends GenericElement {
     super.attributeChangedCallback(attrName, oldVal, newVal);
   }
 
+  normalize(value) {
+    // return value
+    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+  }
+
+  filter(value){
+    console.log('value',value);
+    let filteredData = this.rawSupplies.filter(record=>{
+      console.log(`record['DFC:description']`,record['DFC:description']);
+      return this.normalize(record['DFC:description'].toUpperCase()).includes(this.normalize(value.toUpperCase()));
+    })
+    this.setDataGrid(filteredData)
+  }
+
   setDataGrid(data) {
     console.log('data received Tree', data);
     let counter = 0;
@@ -167,6 +185,8 @@ export default class ItemImport extends GenericElement {
     this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     this.elements.quantity.textContent = data['DFC:quantity'];
     this.elements.source.textContent = data['source'];
+    this.elements.descriptionSearch.value = data['DFC:description'];
+
   }
 
   consolidate(newSupply) {

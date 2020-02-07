@@ -38,7 +38,17 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     // console.log('userinfo', userinfo);
     // console.log('claims', tokenset.claims());
     userinfo.accesstoken = tokenset.access_token;
-
+          var components = tokenset.split('.');
+          // console.log(components);
+          // var header = JSON.parse(base64url.decode(components[0]));
+          // var payload = JSON.parse(base64url.decode(components[1]));
+          // var signature = components[2];
+          // var decodedSignature = base64url.decode(components[2])
+          // console.log('header', header);
+          // console.log('payload', payload);
+          // console.log('resource_access', payload.resource_access);
+          // console.log('signature', signature);
+          // console.log('decoded signature', decodedSignature);
 
     // User.findOne({
     //   id: tokenset.claims().sub
@@ -67,7 +77,7 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     }
 
 
-    console.log('auth headers', req.session.referer, req.session.app_referer);
+    // console.log('auth headers', req.session.referer, req.session.app_referer);
     next()
   });
 
@@ -86,7 +96,7 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     if (req.session.app_referer != undefined) {
       redirect_url = redirect_url + '#' + req.session.app_referer
     }
-    console.log('callback referer', req.session.referer, req.session.app_referer)
+    // console.log('callback referer', req.session.referer, req.session.app_referer)
     res.redirect(redirect_url);
   });
 
