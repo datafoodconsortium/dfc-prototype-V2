@@ -8,10 +8,16 @@ import easyuiCssColors from '../../easyui/jquery-easyui-1.8.1/themes/color.css';
 export default class CatalogSupply extends GenericElement {
   constructor() {
     super(view);
+
+    this.elements = {
+      descriptionSearch: this.shadowRoot.querySelector('[name="descriptionSearch"]'),
+    };
+
     this.subscribe({
       channel: 'supply',
       topic: 'changeAll',
       callback: (data) => {
+        this.rawSupplies = data;
         this.setDataGrid(data)
       }
     });
@@ -56,7 +62,7 @@ export default class CatalogSupply extends GenericElement {
       ]
     });
     // this.gridDom.datagrid('loadData', dataEasyUi);
-        // console.warn('ALLO');
+    // console.warn('ALLO');
 
     this.publish({
       channel: 'supply',
@@ -80,6 +86,10 @@ export default class CatalogSupply extends GenericElement {
     this.shadowRoot.querySelector('#edit').addEventListener('click', e => {
       this.edit();
     })
+
+    this.shadowRoot.querySelector('#filter').addEventListener('click', e => {
+      this.filter(this.elements.descriptionSearch.value);
+    })
   }
 
   disconnectedCallback() {
@@ -90,15 +100,30 @@ export default class CatalogSupply extends GenericElement {
     super.attributeChangedCallback(attrName, oldVal, newVal);
   }
 
-  edit(){
+  edit() {
     this.publish({
       channel: 'main',
       topic: 'navigate',
-      data : '/x-item-supply/'+encodeURIComponent(this.selectedSupply.id)
+      data: '/x-item-supply/' + encodeURIComponent(this.selectedSupply.id)
     })
   }
 
-  setDataGrid(data){
+  normalize(value) {
+    // return value
+    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+  }
+
+  filter(value) {
+    // console.log('value', value);
+    let filteredData = this.rawSupplies.filter(record => {
+      // console.log(`record['DFC:description']`, record['DFC:description']);
+      return this.normalize(record['DFC:description'].toUpperCase()).includes(this.normalize(value.toUpperCase()));
+    })
+    this.setDataGrid(filteredData)
+  }
+
+
+  setDataGrid(data) {
     console.log('data received Tree', data);
     let counter = 0;
     let dataEasyUi = data.map(d => {
@@ -110,7 +135,7 @@ export default class CatalogSupply extends GenericElement {
         children: d.imports.map(c => {
           counter++;
           return {
-            id:counter,
+            id: counter,
             source: c.source,
             raw: d,
             description: c['DFC:description'],
