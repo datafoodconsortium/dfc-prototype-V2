@@ -37,8 +37,9 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     // console.log('tokenset', tokenset);
     // console.log('userinfo', userinfo);
     // console.log('claims', tokenset.claims());
+    console.log('tokenset',tokenset);
     userinfo.accesstoken = tokenset.access_token;
-          var components = tokenset.split('.');
+          var components = userinfo.accesstoken.split('.');
           // console.log(components);
           // var header = JSON.parse(base64url.decode(components[0]));
           // var payload = JSON.parse(base64url.decode(components[1]));
