@@ -30,10 +30,16 @@ export default class User extends GenericElement {
         this.createEntrepriseForUser(data);
       }
     });
+    this.subscribe({
+      channel: 'user',
+      topic: 'logout',
+      callback: () => {
+        this.logout();
+      }
+    });
   }
 
   setProfil(data){
-    console.log('setProfil',data);
     this.profil=data;
     this.publish({
       channel: 'user',
@@ -42,7 +48,6 @@ export default class User extends GenericElement {
     });
   }
   createEntrepriseForUser(data){
-    console.log('createEntrepriseForUser',this.profil.user,data);
     // this.user['DFC:Entreprise']=data;
     let url = '/data/core/user/'+this.profil.user._id+'/entreprise';
     let option = {
@@ -60,6 +65,14 @@ export default class User extends GenericElement {
     })
   }
 
+  logout(){
+    localStorage.removeItem('token');
+    console.log(window.location.href);
+    let redirectUrl = `/login/auth/logout?redirectUri=${window.location.href}`;
+    window.location.href = redirectUrl;
+    // this.util.ajaxCall("/auth/logout, option")
+  }
+
   getUser(data){
     if(this.profil !=undefined  &&  this.profil.user!=undefined){
       this.publish({
@@ -68,7 +81,6 @@ export default class User extends GenericElement {
         data: this.profil.user
       });
     }
-
   }
 
 

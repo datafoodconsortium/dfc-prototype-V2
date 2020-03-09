@@ -10,8 +10,6 @@ module.exports = function (router) {
   let user = new User();
 
   router.post('/user/:id/entreprise', async (req, res, next)=>{
-    console.log('post user',req.body);
-    // console.log('supply',req.params.id);
     let out= await user.createEntreprise(req.params.id,req.body);
     res.json(out)
   })

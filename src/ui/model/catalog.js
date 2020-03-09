@@ -107,7 +107,7 @@ export default class Catalog extends GenericElement {
       method: 'POST'
     };
     this.util.ajaxCall(url, option).then(data => {
-      console.log('resolve ajaxCall', data);
+      // console.log('resolve ajaxCall', data);
       alert(name + ' bien importé')
     }).catch(e=>{
       alert(e)
@@ -120,7 +120,7 @@ export default class Catalog extends GenericElement {
       method: 'POST'
     };
     this.util.ajaxCall(url, option).then(data => {
-      console.log('import converti', data);
+      // console.log('import converti', data);
       this.publish({
         channel: 'import',
         topic: 'convert.done',
@@ -130,6 +130,7 @@ export default class Catalog extends GenericElement {
   }
 
   async getSources() {
+    // console.log('getSources',this.util);
     let config = await this.util.getConfig();
     this.publish({
       channel: 'source',
@@ -150,40 +151,24 @@ export default class Catalog extends GenericElement {
           'DFC:quantity': record['DFC:quantity'],
           'DFC:hasUnit': {
             '@id': record['DFC:hasUnit']['@id']
-          }
+          },
+          'DFC:hostedBy': record['DFC:hostedBy'],
         }
       })
 
-      console.log('newRecords', newRecords);
       this.catalogs = newRecords;
       this.catalogs.sort((a, b) => {
         let dif = a['DFC:description'].localeCompare(b['DFC:description']);
         // console.log(dif);
         return dif;
       });
-      // newRecords.forEach(nr => {
-      //   let existingRecord = this.catalogsTree.filter(er => er['DFC:description'] == nr['DFC:description']);
-      //   if (existingRecord.length > 0) {
-      //     existingRecord[0].children.push(nr);
-      //   } else {
-      //     let newRoot = {
-      //       'DFC:description': nr['DFC:description'],
-      //       children: [nr]
-      //     };
-      //     this.catalogsTree.push(newRoot);
-      //   }
-      // })
-      // console.log('this.catalogsTree',this.catalogsTree);
+
       this.publish({
         channel: 'import',
         topic: 'changeAll',
         data: this.catalogs
       });
-      // this.publish({
-      //   channel: 'import',
-      //   topic: 'changeAllTree',
-      //   data: this.catalogsTree
-      // });
+
     })
   }
 
@@ -191,7 +176,7 @@ export default class Catalog extends GenericElement {
     let url = `/data/core/import/${id}`;
     this.util.ajaxCall(url).then(data => {
       this.selectedImport = data.body;
-      console.log('loadOneImport', this.selectedImport);
+      // console.log('loadOneImport', this.selectedImport);
       this.publish({
         channel: 'import',
         topic: 'changeOne',
@@ -211,11 +196,13 @@ export default class Catalog extends GenericElement {
         return {
           'id': record['_id'],
           'imports': record['imports'],
-          'DFC:description': record['DFC:description']
+          'DFC:description': record['DFC:description'],
+          'DFC:hasPivot': record['DFC:hasPivot'],
+          'DFC:hostedBy': record['DFC:hostedBy'],
+
         }
       })
 
-      console.log('newRecords', newRecords);
       this.catalogs = newRecords;
       this.catalogs.sort((a, b) => {
         let dif = a['DFC:description'].localeCompare(b['DFC:description']);
@@ -246,10 +233,7 @@ export default class Catalog extends GenericElement {
   }
 
   unlinkSupply(supply, importItem) {
-    // console.log('supply',supply);
-    // console.log('import',importItem);
-    supply.imports = supply.imports.filter(i => i._id != importItem._id);
-    console.log('supply after', supply);
+    supply["DFC:hasPivot"]["DFC:represent"] = supply["DFC:hasPivot"]["DFC:represent"].filter(r => r._id != importItem._id);
     let url = '/data/core/supply/';
     let option = {
       method: 'POST',

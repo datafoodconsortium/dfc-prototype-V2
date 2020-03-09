@@ -11,11 +11,8 @@ class Entreprise {
     return new Promise(async (resolve, reject) => {
       try {
         let entreprise = await entrepriseModel.model.findById(id);
-        // console.log('entreprise',entreprise);
         let supplies = await supplyModel.model.find({"DFC:suppliedBy":id});
-        // console.log('supplies',supplies);
         entreprise['DFC:supplies']= supplies
-        // console.log('products', products);
         resolve(entreprise);
       } catch (e) {
         reject(e);

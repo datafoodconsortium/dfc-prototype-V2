@@ -49,7 +49,6 @@ export default class OIDC_test extends GenericElement {
     })
   }
   setResult(result) {
-    console.log('result', result);
     this.elements.result.value = JSON.stringify(result.body);
     this.elements.header.value = result.headers;
   }

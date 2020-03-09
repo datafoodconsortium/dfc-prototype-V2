@@ -10,28 +10,12 @@ const ldpSerializer =require('./../serializer/LDP.js');
 module.exports = function(router) {
   // this.config = require('./../../configuration.js');
 
-  let entreprise = new Entreprise();
+  // let entreprise = new Entreprise();
 
-  router.get('/me/entrepriseJSONLD', async (req, res, next) => {
-    try {
-      let entrepriseMongo = await entreprise.getOneEntreprise(req.user['DFC:Entreprise']._id);
-      let out = json_ldSerializer.serialize(entrepriseMongo);
-
-      res.json(out);
-    } catch (e) {
-      next(e);
-    } finally {
-
-    }
-
-
-  })
-
-  // router.get('/entrepriseLDP', async (req, res, next) => {
+  // router.get('/me/entrepriseJSONLD', async (req, res, next) => {
   //   try {
-  //     console.log('req.user',req.user);
   //     let entrepriseMongo = await entreprise.getOneEntreprise(req.user['DFC:Entreprise']._id);
-  //     let out = ldpSerializer.serialize(entrepriseMongo,res);
+  //     let out = json_ldSerializer.serialize(entrepriseMongo);
   //
   //     res.json(out);
   //   } catch (e) {

@@ -38,7 +38,6 @@ export default class ItemImport extends GenericElement {
       channel: 'import',
       topic: 'convert.done',
       callback: (data) => {
-        console.log('navigation');
         this.publish({
           channel: 'main',
           topic: 'navigate',
@@ -141,16 +140,13 @@ export default class ItemImport extends GenericElement {
   }
 
   filter(value){
-    console.log('value',value);
     let filteredData = this.rawSupplies.filter(record=>{
-      console.log(`record['DFC:description']`,record['DFC:description']);
       return this.normalize(record['DFC:description'].toUpperCase()).includes(this.normalize(value.toUpperCase()));
     })
     this.setDataGrid(filteredData)
   }
 
   setDataGrid(data) {
-    console.log('data received Tree', data);
     let counter = 0;
     let dataEasyUi = data.map(d => {
       counter++;
@@ -159,22 +155,20 @@ export default class ItemImport extends GenericElement {
         description: d['DFC:description'],
         raw: d,
         // 'id': d['@id'],
-        children: d.imports.map(c => {
+        children: d['DFC:hasPivot']['DFC:represent'].map(c => {
           counter++;
           return {
             id: counter,
-            raw: c,
-            source: c.source,
+            raw: {DFCid:d.id,...c},
+            source: c['DFC:hostedBy']['DFC:name'],
             description: c['DFC:description'],
             quantity: c['DFC:quantity'],
             unit: c['DFC:hasUnit']['@id'],
-            supply: d,
             '@id': c['@id']
           }
         })
       }
     })
-    console.log('gridDomTree', this.gridDomTree, dataEasyUi);
     this.gridDomTree.treegrid('loadData', dataEasyUi);
   }
 
@@ -191,15 +185,16 @@ export default class ItemImport extends GenericElement {
 
   consolidate(newSupply) {
     let supplyId;
+    // console.log('this.selectedSupply',this.selectedSupply);
     if(newSupply!==true){
-      if (this.selectedSupply.supply != undefined) {
-        supplyId = this.selectedSupply.supply;
+      if (this.selectedSupply.DFCid != undefined) {
+        supplyId = this.selectedSupply.DFCid;
       } else {
         supplyId = this.selectedSupply.id;
       }
     }
 
-    console.log(supplyId, this.item['@id']);
+    // console.log(supplyId, this.item['@id']);
     this.publish({
       channel: 'import',
       topic: 'convert',

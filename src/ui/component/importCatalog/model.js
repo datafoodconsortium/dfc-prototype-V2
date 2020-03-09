@@ -36,7 +36,6 @@ export default class ImportCatalog extends GenericElement {
 
     this.shadowRoot.getElementById('clean-button').addEventListener('click', e => {
       let cleandecision = confirm('êtes vous sur de vouloir supprimer le catalogue lié à cet utilisateur');
-      console.log(cleandecision);
       if (cleandecision == true) {
         this.publish({
           channel: 'source',
@@ -47,7 +46,6 @@ export default class ImportCatalog extends GenericElement {
 
     this.shadowRoot.getElementById('source-select').addEventListener('change', e => {
       const sourceSelected = this.sources.filter(s => s.name == e.target.value)[0];
-      console.log('sourceSelected', sourceSelected);
       const divOptions = this.shadowRoot.getElementById('options');
       while (divOptions.firstChild) {
         divOptions.removeChild(divOptions.firstChild);
@@ -87,7 +85,6 @@ export default class ImportCatalog extends GenericElement {
   }
 
   loadSources(data) {
-    console.log('loadSources', data);
     this.sources = data;
     let sourceSelect = this.shadowRoot.getElementById('source-select');
     for (let source of data) {

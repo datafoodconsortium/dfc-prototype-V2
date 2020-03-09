@@ -36,7 +36,6 @@ export default class Catalog extends GenericElement {
 
   setData(data) {
     let catalogList =this.shadowRoot.getElementById('catalogList');
-    console.log('data received',data);
     data.forEach(item=>{
       this.addCell(item['source']);
       this.addCell(item['DFC:description'],'cell');

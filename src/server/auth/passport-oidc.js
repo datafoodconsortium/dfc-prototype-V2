@@ -33,11 +33,11 @@ let addOidcLesCommunsPassportToApp = async function(router) {
     client,
     params
   }, (tokenset, userinfo, done) => {
-    console.log('OIDC CallBack success');
+    // console.log('OIDC CallBack success');
     // console.log('tokenset', tokenset);
     // console.log('userinfo', userinfo);
     // console.log('claims', tokenset.claims());
-    console.log('tokenset',tokenset);
+    // console.log('tokenset',tokenset);
     userinfo.accesstoken = tokenset.access_token;
           var components = userinfo.accesstoken.split('.');
           // console.log(components);
@@ -65,7 +65,6 @@ let addOidcLesCommunsPassportToApp = async function(router) {
   // options [optional], extra authentication parameters
 
   router.get('/auth?app_referer=:app_referer', async function(req, res, next) {
-    console.log('APP REFERER');
     next()
   });
   router.get('/auth', async function(req, res, next) {
@@ -104,25 +103,20 @@ let addOidcLesCommunsPassportToApp = async function(router) {
 
   router.get('/auth/me', middlware_express_oidc, async function(req, res, next) {
     let config = require("../../../configuration.js");
-    // let url =config.OIDC.lesCommuns.issuer+'users/'+req.oidcPayload.jti;
-    // let url ='https://login.lescommuns.org/auth/admin/realms/master/users/b5d90393-b94f-43b6-9287-9e9dfd09a43f'
-    // console.log(url);
-    // request(url, {
-    //   json: true,
-    //   auth: {
-    //     bearer: req.accessToken
-    //   }
-    // }, (err, result) => {
-    //   console.log('ALLO');
-    //   console.log(err);
-    //   console.log(result.statusCode);
-    // })
-
-    // console.log('req.oidcPayload',req.oidcPayload);
     res.json({
       oidcPayload: req.oidcPayload,
       user: req.user
     });
   });
+
+  router.get('/auth/logout', async function(req, res, next) {
+    console.log(req.query.redirectUri);
+    req.logout(); // Passport logout
+    res.redirect(
+      `${lesCommunsIssuer.end_session_endpoint}?post_logout_redirect_uri=${encodeURIComponent(req.query.redirectUri)}`
+    );
+    next();
+  });
+
 }
 module.exports = addOidcLesCommunsPassportToApp;

@@ -24,7 +24,7 @@ class Entreprise {
       try {
         let user = await userModel.model.findOne({
           'login': login
-        }).populate('DFC:Entreprise');
+        });
         if (user == undefined) {
           user = await this.createOneUser({
             'login': login,
@@ -42,7 +42,6 @@ class Entreprise {
   }
 
   async createEntreprise(userId,entreprise) {
-    console.log('createEntreprise',userId,entreprise);
     return new Promise(async (resolve, reject) => {
       try {
         let user = await userModel.model.findById(userId);

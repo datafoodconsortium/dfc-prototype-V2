@@ -39,7 +39,6 @@ export default class Router extends GenericElement {
   }
   attributeChangedCallback(attrName, oldVal, newVal) {
     super.attributeChangedCallback(attrName, oldVal, newVal);
-    //console.log('ALLO');
     switch (attrName) {
       case 'default':
         this.router.navigate('/' + newVal);

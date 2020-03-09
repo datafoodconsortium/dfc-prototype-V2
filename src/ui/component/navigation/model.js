@@ -18,12 +18,32 @@ import ldp_test from '../LDP-test/model.js';
 export default class Navigation extends GenericElement {
   constructor() {
     super(view);
+
+    this.elements = {
+      loader: this.shadowRoot.querySelector('#containerLoaderDiv'),
+    };
+
     this.subscribe({
       channel: 'main',
       topic: 'screen',
       callback: (data) => {
         // console.log('screen', data);
         this.loadComponent(data);
+      }
+    });
+
+    this.subscribe({
+      channel: 'ui',
+      topic: 'activLoader',
+      callback: () => {
+        this.elements.loader.classList.remove('hide')
+      }
+    });
+    this.subscribe({
+      channel: 'ui',
+      topic: 'hideLoader',
+      callback: () => {
+        this.elements.loader.classList.add('hide')
       }
     });
   }
@@ -80,7 +100,7 @@ export default class Navigation extends GenericElement {
 
       if (token != undefined && token != 'undefined') {
 
-        console.log('existing token');
+        // console.log('existing token');
 
         // localStorage.removeItem('token');
         // document.getElementById('oidcLink').click();
@@ -105,7 +125,7 @@ export default class Navigation extends GenericElement {
         if (response.status == 200) {
           let jsonResponse = await response.json();
 
-          console.log('response', jsonResponse);
+          // console.log('response', jsonResponse);
           this.publish({
             channel: 'profil',
             topic: 'set',

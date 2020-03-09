@@ -1,3 +1,4 @@
+import postal from 'postal';
 export default class Util {
   async getConfig(){
     let response = await fetch('/data/core/config');
@@ -20,8 +21,15 @@ export default class Util {
         };
 
         Object.assign(option, myInit);
+        postal.publish({
+          channel: 'ui',
+          topic: 'activLoader'
+        });
         fetch(url, option).then(async function(response) {
-
+          postal.publish({
+            channel: 'ui',
+            topic: 'hideLoader'
+          });
           if (response.ok) {
             // console.log('OK!',response);
             let headers = {};
@@ -34,7 +42,6 @@ export default class Util {
 
               // console.log(name + ": " + value);
             });
-            console.log('headerString', headerString);
             let body = await response.json();
             resolve({
               body: body,
@@ -59,7 +66,13 @@ export default class Util {
             reject(new Error(errorMessage));
           }
 
-        })
+        }).catch(e => {
+          postal.publish({
+            channel: 'ui',
+            topic: 'hideLoader'
+          });
+          reject(e);
+        });
         // .then(function(data) {
         //   resolve(data)
         // }).catch(e => {

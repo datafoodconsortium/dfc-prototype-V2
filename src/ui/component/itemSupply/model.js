@@ -119,7 +119,7 @@ export default class ItemSupply extends GenericElement {
       counter++;
       return {
         id: counter,
-        source: d.source,
+        source: d['DFC:hostedBy']['DFC:name'],
         raw:d,
         description: d['DFC:description'],
         quantity: d['DFC:quantity'],
@@ -132,13 +132,12 @@ export default class ItemSupply extends GenericElement {
   }
 
   setData(data) {
-    console.log('setData',data);
     this.item = data
     this.elements.description.textContent = data['DFC:description'];
     this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     this.elements.quantity.textContent = data['DFC:quantity'];
     this.elements.id.textContent = data['@id'];
-    this.setDataGrid(data.imports)
+    this.setDataGrid(data["DFC:hasPivot"]["DFC:represent"])
     // this.elements.unit.textContent = data['DFC:hasUnit']['@id'];
     // this.elements.quantity.textContent = data['DFC:quantity'];
     // this.elements.source.textContent = data['source'];

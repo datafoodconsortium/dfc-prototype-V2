@@ -27,17 +27,16 @@ module.exports = function(router) {
   //
   // })
 
-  router.get('/entrepriseLDP/:id', async (req, res, next) => {
-    try {
-      // console.log('req.user',req.user);
-      let entrepriseMongo = await entreprise.getOneEntreprise(req.params.id);
-      let out = ldpSerializer.serialize(entrepriseMongo,res);
-
-      res.json(out);
-    } catch (e) {
-      next(e);
-    } finally {
-
-    }
-  })
+  // router.get('/entrepriseLDP/:id', async (req, res, next) => {
+  //   try {
+  //     let entrepriseMongo = await entreprise.getOneEntreprise(req.params.id);
+  //     let out = ldpSerializer.serialize(entrepriseMongo,res);
+  //
+  //     res.json(out);
+  //   } catch (e) {
+  //     next(e);
+  //   } finally {
+  //
+  //   }
+  // })
 }

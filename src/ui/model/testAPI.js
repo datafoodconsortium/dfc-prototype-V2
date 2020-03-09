@@ -10,7 +10,6 @@ export default class TestAPI extends GenericElement {
       channel: 'testAPI',
       topic: 'testApiHeaderCall',
       callback: (data) => {
-        console.log('testApiHeaderCall');
         this.testApiHeader(data);
       }
     });
@@ -20,7 +19,6 @@ export default class TestAPI extends GenericElement {
   testApiHeader(url) {
     url=window.location.origin +'/data/core/redirectAPI?url='+url;
     this.util.ajaxCall(url).then(data => {
-      console.log('ajaxCall callback',data);
       this.publish({
         channel: 'testAPI',
         topic: 'testApiHeaderResponse',

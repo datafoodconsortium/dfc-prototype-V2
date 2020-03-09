@@ -43,7 +43,7 @@ export default class GenericElement extends HTMLElement {
       this.shadowRoot.innerHTML = view;
     }else{
       this.innerHTML = view;
-      console.log('innerHTML',this.innerHTML);
+      // console.log('innerHTML',this.innerHTML);
     }
 
     // console.log('OK');

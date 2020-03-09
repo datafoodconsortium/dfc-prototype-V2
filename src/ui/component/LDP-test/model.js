@@ -61,17 +61,10 @@ export default class LDP_test extends GenericElement {
         queryEngine
       });
 
-      console.log('ALLO1');
       const proxy = path.create({
         subject: namedNode('http://localhost:8080/data/core/entrepriseLDP/5da83c675417a50a1250ee08')
       });
-      console.log('ALLO2');
       let description = await proxy['DFC:description'];
-      console.log('DFC:description', description.toString());
-      // let description2 = await proxy.description;
-      // console.log('description', description2);
-
-      console.log(`This entreprise is ${await proxy['DFC:description']}`);
 
 
       (async document => {
@@ -84,34 +77,6 @@ export default class LDP_test extends GenericElement {
         console.log(`property ${property}`);
       })(proxy);
 
-
-      // const context = {
-      //   "@context": {
-      //     "@vocab": "http://xmlns.com/foaf/0.1/",
-      //     "friends": "knows",
-      //     "label": "http://www.w3.org/2000/01/rdf-schema#label",
-      //   }
-      // };
-      // // The query engine and its source
-      // const queryEngine = new ComunicaEngine('https://ruben.verborgh.org/profile/');
-      // // The object that can create new paths
-      // const path = new PathFactory({
-      //   context,
-      //   queryEngine
-      // });
-      // const ruben = path.create({
-      //   subject: namedNode('https://ruben.verborgh.org/profile/#me')
-      // });
-      // console.log(`This person is ${await ruben.name}`);
-
-
-
-      // console.log(url);
-      // this.publish({
-      //   channel: 'testAPI',
-      //   topic: 'testApiHeaderCall',
-      //   data: url
-      // })
     })
 
     // this.elements.urlInit.addEventListener('click',e=>{

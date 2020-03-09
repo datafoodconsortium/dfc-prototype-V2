@@ -114,9 +114,7 @@ export default class CatalogSupply extends GenericElement {
   }
 
   filter(value) {
-    // console.log('value', value);
     let filteredData = this.rawSupplies.filter(record => {
-      // console.log(`record['DFC:description']`, record['DFC:description']);
       return this.normalize(record['DFC:description'].toUpperCase()).includes(this.normalize(value.toUpperCase()));
     })
     this.setDataGrid(filteredData)
@@ -124,7 +122,6 @@ export default class CatalogSupply extends GenericElement {
 
 
   setDataGrid(data) {
-    console.log('data received Tree', data);
     let counter = 0;
     let dataEasyUi = data.map(d => {
       counter++;
@@ -132,11 +129,11 @@ export default class CatalogSupply extends GenericElement {
         id: counter,
         description: d['DFC:description'],
         raw: d,
-        children: d.imports.map(c => {
+        children: d['DFC:hasPivot']['DFC:represent'].map(c => {
           counter++;
           return {
             id: counter,
-            source: c.source,
+            source: c['DFC:hostedBy']['DFC:name'],
             raw: d,
             description: c['DFC:description'],
             quantity: c['DFC:quantity'],

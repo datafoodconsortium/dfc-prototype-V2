@@ -7,12 +7,12 @@ export default class Profil extends GenericElement {
       email: this.shadowRoot.querySelector('[name="email"]'),
       entreprise: this.shadowRoot.querySelector('[name="entreprise"]'),
       createEntrepriseButton : this.shadowRoot.querySelector('#createEntrepriseButton'),
+      logout: this.shadowRoot.querySelector('#logout'),
     };
     this.subscribe({
       channel: 'user',
       topic: 'changeOne',
       callback: (data) => {
-                    console.log('PUTAINNN');
         // console.log('screen', data);
         this.setUser(data);
       }
@@ -25,12 +25,17 @@ export default class Profil extends GenericElement {
       channel: 'user',
       topic: 'get',
     });
-    console.log('createEntrepriseButton',  this.elements.createEntrepriseButton);
     this.elements.createEntrepriseButton.addEventListener('click', e => {
       this.publish({
         channel: 'user',
         topic: 'createEntreprise',
         data:{'DFC:description':'maPetiteEntreprise'}
+      });
+    });
+    this.elements.logout.addEventListener('click', e => {
+      this.publish({
+        channel: 'user',
+        topic: 'logout'
       });
     });
   }
@@ -49,7 +54,6 @@ export default class Profil extends GenericElement {
   }
 
   setUser(user) {
-    console.log('user', user);
     this.elements.email.textContent = user.login;
     if (user['DFC:Entreprise'] != undefined) {
       this.elements.createEntrepriseButton.classList.add("hide");

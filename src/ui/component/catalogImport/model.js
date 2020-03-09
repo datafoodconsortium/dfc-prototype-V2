@@ -29,7 +29,6 @@ export default class CatalogImport extends GenericElement {
       singleSelect:true,
       autoLoad: false,
       onSelect: (id,rowData) => {
-        console.log('ALLO',rowData);
         this.selected = rowData.raw
       },
       columns: [
@@ -116,7 +115,7 @@ export default class CatalogImport extends GenericElement {
     let dataEasyUi = data.map(d => {
       return {
         id: counter,
-        source: d.source,
+        source: d['DFC:hostedBy']?d['DFC:hostedBy']['DFC:name']:'',
         raw:d,
         description: d['DFC:description'],
         quantity: d['DFC:quantity'],

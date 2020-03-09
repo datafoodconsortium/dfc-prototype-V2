@@ -1,7 +1,7 @@
 const base64url = require('base64url');
 const jose = require('node-jose');
 const config=require("../../../configuration.js")
-const EntrepriseService=require("../service/entreprise.js")
+// const EntrepriseService=require("../service/entreprise.js")
 const UserService=require("../service/user.js")
 
 async function middlware_express_oidc (req,res,next) {
@@ -10,7 +10,7 @@ async function middlware_express_oidc (req,res,next) {
     res.status(401)
     next(new Error('Missing Bearer Token'));
   }else {
-    console.log(req.headers.authorization);
+    // console.log(req.headers.authorization);
     var token = req.headers.authorization.split(' ')[1];
     if (token==null || token==undefined || token=='null') {
       res.status(401)
@@ -26,9 +26,7 @@ async function middlware_express_oidc (req,res,next) {
       // console.log('resource_access', payload.resource_access);
       // console.log('signature', signature);
       // console.log('decoded signature', decodedSignature);
-      let entrepriseService = new EntrepriseService();
-      let userService = new UserService();
-      let user = await userService.connectUser(payload.preferred_username,token);
+      // let entrepriseService = new EntrepriseService();
       // console.log('user',user);
       // let entreprise = await entrepriseService.getOneEntreprise(payload['DFC:Entreprise']);
       // console.log('entreprise',entreprise);
@@ -43,6 +41,9 @@ async function middlware_express_oidc (req,res,next) {
           .verify(token)
 
         req.oidcPayload=payload;
+        let userService = new UserService();
+        let user = await userService.connectUser(payload.preferred_username,token);
+
         req.user=user;
         // req.accessToken=token;
         next()
